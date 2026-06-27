@@ -1,0 +1,6 @@
+{
+  "name": "DosenMatch AI",
+  "description": "Decision Support System for recommending thesis supervisors using AI (NLP / Semantic Similarity) based on real publication data at Universitas Duta Bangsa.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
