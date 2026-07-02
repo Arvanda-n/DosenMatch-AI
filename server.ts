@@ -417,7 +417,22 @@ function simulateMatching(title: string, abstract: string) {
     };
   });
 
-  return scores.sort((a, b) => b.score - a.score).slice(0, 3);
+  const sorted = scores.sort((a, b) => b.score - a.score);
+
+  const deduplicated = sorted.reduce<any[]>((acc, current) => {
+    const existing = acc.find(item => item.lecturerName === current.lecturerName);
+    if (!existing) {
+      acc.push(current);
+    } else {
+      if (current.score > existing.score) {
+        const idx = acc.indexOf(existing);
+        acc[idx] = current;
+      }
+    }
+    return acc;
+  }, []);
+
+  return deduplicated.sort((a, b) => b.score - a.score).slice(0, 3);
 }
 
 // Implement Vite middleware for dev / static serving for prod

@@ -438,7 +438,7 @@ Step-by-Step NLP Pipeline & Konektivitas Database:
         <div className="space-y-8">
           {(activeTab === "security" ? sectionsSecurity : sectionsBackendAi).map((sec) => (
             <div key={sec.id} className="group relative border border-slate-100 hover:border-blue-100 rounded-xl p-6 transition duration-200 bg-white" id={`card-sec-${sec.id}`}>
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center items-start gap-3 mb-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-slate-50 group-hover:bg-blue-50 transition duration-200">
                     {sec.icon}
@@ -447,7 +447,7 @@ Step-by-Step NLP Pipeline & Konektivitas Database:
                 </div>
                 <button
                   onClick={() => handleCopy(sec.text, sec.id)}
-                  className="flex items-center gap-1.5 text-slate-400 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 border border-slate-100 px-2.5 py-1.5 rounded-lg transition duration-150 text-[10px] font-semibold cursor-pointer"
+                  className="flex items-center gap-1.5 text-slate-400 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 border border-slate-100 px-2.5 py-1.5 rounded-lg transition duration-150 text-[10px] font-semibold cursor-pointer w-full sm:w-auto justify-center"
                   id={`btn-copy-${sec.id}`}
                   title="Salin bagian ini"
                 >

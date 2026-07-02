@@ -243,7 +243,7 @@ export default function DashboardHub({ user, onLogout, onSwitchRole }: Dashboard
                ============================================================== */
             <div className="space-y-6" id="dashboard-dosen">
               {/* Stats overview */}
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm text-center">
                   <Users className="w-5 h-5 text-blue-600 mx-auto mb-1.5" />
                   <span className="text-[10px] text-slate-400 font-bold uppercase block tracking-wide">Bimbingan Aktif</span>
@@ -352,7 +352,7 @@ export default function DashboardHub({ user, onLogout, onSwitchRole }: Dashboard
                ============================================================== */
             <div className="space-y-6" id="dashboard-kaprodi">
               {/* Stats overview */}
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm text-center">
                   <FileText className="w-5 h-5 text-blue-600 mx-auto mb-1.5" />
                   <span className="text-[10px] text-slate-400 font-bold uppercase block tracking-wide">Total Pengajuan</span>

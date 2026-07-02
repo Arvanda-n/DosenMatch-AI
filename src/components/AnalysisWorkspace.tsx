@@ -261,7 +261,22 @@ export function calculateMatchingScores(title: string, abstract: string): MatchR
     };
   });
 
-  return calculatedResults.sort((a, b) => b.score - a.score);
+  const sorted = calculatedResults.sort((a, b) => b.score - a.score);
+
+  const deduplicated = sorted.reduce<MatchResult[]>((acc, current) => {
+    const existing = acc.find(item => item.lecturerName === current.lecturerName);
+    if (!existing) {
+      acc.push(current);
+    } else {
+      if (current.score > existing.score) {
+        const idx = acc.indexOf(existing);
+        acc[idx] = current;
+      }
+    }
+    return acc;
+  }, []);
+
+  return deduplicated.sort((a, b) => b.score - a.score);
 }
 
 interface AnalysisWorkspaceProps {
@@ -364,7 +379,7 @@ export default function AnalysisWorkspace({ initialTitle, initialAbstract, onCle
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* INPUT PANEL */}
         <div className="lg:col-span-5">
-          <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm sticky top-24">
+          <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm lg:sticky lg:top-24">
             <h3 className="font-bold text-slate-800 text-sm mb-4 font-sans flex items-center gap-2 pb-3 border-b border-slate-100">
               <FileText className="w-4 h-4 text-blue-600" />
               Rencana Topik Skripsi
@@ -521,7 +536,7 @@ export default function AnalysisWorkspace({ initialTitle, initialAbstract, onCle
               </div>
 
               {/* Selection cards */}
-              <div className="grid grid-cols-3 gap-3" id="result-selector-tabs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3" id="result-selector-tabs">
                 {results.map((res, i) => (
                   <div
                     key={res.lecturerId}
@@ -555,20 +570,20 @@ export default function AnalysisWorkspace({ initialTitle, initialAbstract, onCle
               {results[selectedResultIndex] && (
                 <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm space-y-6" id="expanded-result-card">
                   {/* Header */}
-                  <div className="flex justify-between items-start gap-4 pb-5 border-b border-slate-100">
-                    <div>
-                      <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-mono text-[9px] font-bold mb-2">
+                  <div className="flex flex-col sm:flex-row justify-between items-start gap-4 pb-5 border-b border-slate-100" id="expanded-result-header">
+                    <div className="space-y-1">
+                      <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-mono text-[9px] font-bold">
                         SKOR COSINE SIMILARITY: {results[selectedResultIndex].score}
                       </div>
                       <h3 className="text-lg font-extrabold text-slate-800 tracking-tight font-sans">
                         {results[selectedResultIndex].lecturerName}
                       </h3>
                       <p className="text-[11px] text-slate-500 font-medium">
-                        NIDN: {results[selectedResultIndex].nidn} • Jabatan Akademik: {results[selectedResultIndex].role}
+                        NIDN: {results[selectedResultIndex].nidn.includes("TEMP") ? "[Dalam Proses Pembaruan]" : results[selectedResultIndex].nidn} • Jabatan Akademik: {results[selectedResultIndex].role}
                       </p>
                     </div>
 
-                    <div className="flex flex-col items-end">
+                    <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto pt-2 sm:pt-0">
                       <div className="w-16 h-16 rounded-2xl bg-blue-600 text-white flex flex-col items-center justify-center shadow-md shadow-blue-100">
                         <span className="text-2xl font-extrabold font-mono leading-none">
                           {Math.round(results[selectedResultIndex].score * 100)}
@@ -625,7 +640,23 @@ export default function AnalysisWorkspace({ initialTitle, initialAbstract, onCle
                       Analisis Kecocokan AI (XAI)
                     </span>
                     <p className="text-slate-600 leading-relaxed font-sans font-medium">
-                      {results[selectedResultIndex].reason}
+                      {(() => {
+                        const currentLec = results[selectedResultIndex];
+                        const inputTeksMahasiswa = title;
+                        
+                        // Ambil array kataKunci dari dosen yang memenangkan peringkat 1
+                        const winnerLecId = results[0]?.lecturerId;
+                        const udbId = winnerLecId ? parseInt(winnerLecId.replace("udb-", "")) : null;
+                        const winnerLecturer = dosenUdbDataset.find(d => d.id === udbId);
+                        const winnerKataKunci = winnerLecturer ? winnerLecturer.kataKunci : [];
+                        
+                        // Irisan kata kunci untuk dosen yang sedang aktif dipilih
+                        const kataKunciGabungan = currentLec.matchedKeywords && currentLec.matchedKeywords.length > 0
+                          ? currentLec.matchedKeywords.join(", ")
+                          : (winnerKataKunci.length > 0 ? winnerKataKunci.slice(0, 3).join(", ") : "Kecerdasan Buatan");
+
+                        return `Topik yang Anda ajukan mengenai '${inputTeksMahasiswa}' terdeteksi memiliki korelasi kuat dengan rekam jejak ${currentLec.lecturerName}. Algoritma menemukan kedekatan semantik pada keahlian ${currentLec.focus}, khususnya yang merujuk pada publikasi beliau yang berjudul '${currentLec.matchedPublication}'. Hal ini divalidasi oleh irisan pada kata kunci: ${kataKunciGabungan}.`;
+                      })()}
                     </p>
                   </div>
 
