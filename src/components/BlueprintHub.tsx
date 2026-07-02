@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Copy, Check, Download, BookOpen, Layers, ShieldCheck, Cpu, FileText } from "lucide-react";
+import { Copy, Check, Download, BookOpen, Layers, ShieldCheck, Cpu, Database, Network } from "lucide-react";
 
 export default function BlueprintHub() {
+  const [activeTab, setActiveTab] = useState<"security" | "backend-ai">("security");
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
 
   const handleCopy = (text: string, id: string) => {
@@ -20,7 +21,7 @@ export default function BlueprintHub() {
     document.body.removeChild(element);
   };
 
-  const blueprintFullText = `================================================================================
+  const blueprintFullTextSecurity = `================================================================================
 BLUEPRINT ARSITEKTUR SISTEM, BASIS DATA, DAN SPESIFIKASI ANTARMUKA "DOSENMATCH AI"
 Studi Kasus: Program Studi Teknik Informatika, Universitas Duta Bangsa (UDB) Surakarta
 Dokumen Hasil Rancangan Apex System Architect & AI Researcher untuk Laporan UAS
@@ -32,7 +33,7 @@ A. Analisis Landing Page: Mengapa "Clean Academic SaaS" Sangat Tepat untuk Kampu
 Pendekatan visual "Clean Academic SaaS" dengan dominasi ruang negatif (negative space), sudut tumpul lembut (rounded corners), dan tata letak lapang (spacious padding) memberikan dampak psikologis signifikan dalam lingkungan institusi pendidikan tinggi. 
 
 - Mereduksi Kecemasan Administratif: Proses penentuan dosen pembimbing skripsi sering kali dipandang menegangkan dan membingungkan oleh mahasiswa. Desain yang bersih dan terstruktur mereduksi "cognitive overload," mengubah persepsi birokrasi kampus menjadi alur kerja modern yang transparan dan bersahabat.
-- Tipografi Poppins: Pemilihan font Poppins secara eksklusif memberikan estetika kontemporer yang ramah dan berwibawa. Karakter geometris sans-serif sans-serif yang seimbang menjaga legibilitas tinggi, baik pada layar desktop beresolusi tinggi maupun perangkat mobile, melambangkan modernitas UDB yang responsif terhadap inovasi digital.
+- Tipografi Poppins: Pemilihan font Poppins secara eksklusif memberikan estetika kontemporer yang ramah dan berwibawa. Karakter geometris sans-serif yang seimbang menjaga legibilitas tinggi, baik pada layar desktop beresolusi tinggi maupun perangkat mobile, melambangkan modernitas UDB yang responsif terhadap inovasi digital.
 - Kepercayaan Akademik: Konsistensi elemen UI menunjukkan tingkat profesionalisme tinggi, mempertegas identitas Universitas Duta Bangsa (UDB) sebagai "The Global Entrepreneur University" yang mengadopsi teknologi terdepan secara andal.
 
 B. XAI (Explainable AI) Visualization: Peran Simbolisme dan Label Teknis
@@ -87,16 +88,114 @@ Di mana A adalah vektor skripsi mahasiswa dan B adalah vektor jurnal publikasi d
 [Langkah 6: Penyaringan (Filtering) dan Rekomendasi Teratas]
 Sistem mengurutkan nilai Cosine Similarity tertinggi dan menyaring 3 kandidat dosen dengan tingkat kemiripan semantik paling signifikan. Hasil pencocokan diperkaya dengan visualisasi representasi dimensi BERT dan penjelasan transparan (XAI) mengenai alasan korelasi topik publikasi ilmiah dosen dengan rencana skripsi mahasiswa. Hasil akhir dikirimkan kembali ke Frontend secara real-time.`;
 
-  const sections = [
+  const blueprintFullTextBackendAi = `================================================================================
+BLUEPRINT LOGIKA SISTEM (BACKEND LARAVEL & PYTHON AI MICROSERVICE) "DOSENMATCH AI"
+Nama Proyek: DOSENMATCH AI
+Studi Kasus: Program Studi Teknik Informatika, Universitas Duta Bangsa (UDB) Surakarta
+Dokumen Hasil Rancangan Apex Backend Architect & AI Engineer untuk Laporan UAS
+================================================================================
+
+1. DATABASE SCHEMA ANALYSIS
+--------------------------------------------------------------------------------
+A. Analisis Struktur Relasi Entitas (Database Schema)
+Berdasarkan skrip DDL SQL yang diajukan, rancangan basis data relational dikonfigurasi sebagai berikut:
+- Tabel 'users': Berfungsi sebagai master data otentikasi (NIM/NIDN, email, password terenkripsi, dan payload role akademik).
+- Tabel 'dosen': Menyimpan profil primer pengajar (nidn, nama_lengkap, bidang_keahlian, sinta_id). Relasinya adalah One-to-One dengan tabel 'users' untuk penanganan profil personal yang aman.
+- Tabel 'jurnal_dosen': Menyimpan daftar karya ilmiah acuan dosen (judul_jurnal, kata_kunci) yang diikat oleh Foreign Key 'dosen_id' merujuk ke tabel 'dosen'.
+
+B. Urgensi Akademis Pemisahan Tabel (One-to-Many Relationship) untuk Vektorisasi AI
+Pemisahan tabel 'dosen' dan 'jurnal_dosen' merupakan keputusan desain arsitektural yang mutlak krusial untuk keberhasilan pemodelan representasi semantik berbasis NLP. Menggabungkannya menjadi satu baris tunggal dalam database akan memicu kegagalan sistemik karena:
+
+1. Mencegah Gejala "Semantic Dilution" (Pengenceran Makna Semantik):
+   Jika seluruh karya ilmiah seorang dosen digabungkan ke dalam satu kolom teks (misalnya concatenating judul jurnal), maka model BERT akan memproses satu dokumen panjang berskala besar. Hal ini menyebabkan bobot vektor representatif (dense vector) 768 dimensi meluber (diluted), sehingga fokus keahlian spesifik dosen yang tersebar pada jurnal berbeda akan kehilangan bobot tajamnya. Melalui pemisahan One-to-Many, setiap paper diindeks sebagai satu entitas vektor independen berpresisi tinggi.
+
+2. Skalabilitas Korpus Vektor Dinamis:
+   Dosen secara aktif mempublikasikan jurnal ilmiah baru setiap semester. Struktur One-to-Many memungkinkan penambahan paper baru melalui instruksi INSERT sederhana ke tabel 'jurnal_dosen' tanpa menduplikasi data master dosen. Hal ini memastikan konsistensi relasional dan normalisasi tingkat ketiga (3NF).
+
+3. Batch Matrix Computation Efficiency:
+   AI Microservice dapat menghitung Cosine Similarity secara instan menggunakan komputasi matriks paralel di GPU/CPU terhadap korpus jurnal individual, kemudian menggunakan reduksi nilai maks (Max-Pooling) untuk mengidentifikasi paper paling relevan dari dosen tertentu.
+
+
+2. LARAVEL BACKEND LOGIC (API GATEWAY)
+--------------------------------------------------------------------------------
+Laravel diposisikan sebagai API Gateway berkinerja tinggi yang mengelola autentikasi, transaksi data, dan proksiasi request ke layanan Python NLP.
+
+Alur Urutan (Sequence Workflow) Eksekusi API Endpoint:
+1. Client (React Frontend):
+   Mengirimkan HTTP POST Request ke endpoint '/api/v1/dosen-match/analyze' dengan payload JSON:
+   { "judul_skripsi": "...", "abstrak_rencana": "..." }
+
+2. Authentication Layer (Laravel Middleware):
+   Request dinterseptasi oleh Middleware 'auth:sanctum' atau JWT Guard. Laravel mengonfirmasi kevalidan token dari HTTP Header Bearer, memverifikasi user di tabel 'users', dan memastikan peran pengguna adalah 'mahasiswa'.
+
+3. Gateway Proxy Dispatching (GuzzleHTTP / Laravel Http Client):
+   Laravel menyusun ulang payload bersih dan meneruskannya via internal REST call ke Microservice Python FastAPI:
+   Endpoint: POST http://python-ai-service:8000/api/v1/similarity/calculate
+   Payload:
+   {
+     "judul": "...", 
+     "abstrak": "...",
+     "jurnal_korpus": [ ... ] // Opsional: Berisi dump dari jurnal_dosen ter-cache
+   }
+
+4. Microservice Evaluation Response:
+   Python mengembalikan data kecocokan semantik dalam format JSON terkompresi:
+   {
+     "status": "success",
+     "matches": [
+       { "dosen_id": 1, "jurnal_id": 12, "similarity_score": 0.92 },
+       { "dosen_id": 6, "jurnal_id": 4, "similarity_score": 0.85 }
+     ]
+   }
+
+5. Data Enrichment & Hydration:
+   Laravel menangkap respons dari Python, kemudian mengeksekusi Query Join ke database SQL lokal:
+   SELECT d.*, jd.judul_jurnal, jd.kata_kunci 
+   FROM dosen d 
+   JOIN jurnal_dosen jd ON d.id = jd.dosen_id 
+   WHERE jd.id IN (12, 4)
+   
+   Laravel melengkapi data profil dosen secara riil dan menyajikannya dalam struktur payload final yang dikembalikan ke Frontend React dengan HTTP 200 OK.
+
+
+3. PYTHON AI MICROSERVICE (NLP PIPELINE)
+--------------------------------------------------------------------------------
+AI Microservice dirancang menggunakan Python dengan framework ASGI FastAPI untuk mendukung penanganan komputasi pembelajaran mendalam (Deep Learning) secara asinkron.
+
+Step-by-Step NLP Pipeline & Konektivitas Database:
+1. Ingestion & Database Integration:
+   Python berinteraksi dengan database SQL menggunakan SQLAlchemy ORM atau raw Driver Asyncpg. Pada saat boot-up, Python memuat seluruh korpus tabel 'jurnal_dosen' ke dalam RAM / Cache memori untuk operasi berkecepatan tinggi.
+   Query: "SELECT id, dosen_id, judul_jurnal, kata_kunci FROM jurnal_dosen"
+
+2. Text Preprocessing Pipeline:
+   Setiap entri dari kolom 'judul_jurnal' dan input dari mahasiswa dilewatkan pada pipeline standardisasi:
+   - Case Folding: Mengubah seluruh huruf menjadi huruf kecil.
+   - Filtering: Menghapus tanda baca, spasi berlebih, dan angka menggunakan regex.
+   - Stopwords Removal: Menghapus kata-kata tidak bermakna spesifik (seperti 'dan', 'dengan', 'yang', 'pada', 'analisis', 'penerapan') menggunakan corpus dari library Sastrawi atau NLTK.
+
+3. IndoBERT Embedding Generation:
+   - Teks yang telah bersih diumpankan ke 'indobenchmark/indobert-base-p1' Tokenizer untuk diubah menjadi token numerik (input_ids, attention_mask).
+   - Token tersebut dikirim ke model PyTorch IndoBERT Encoder.
+   - Mengekstrak output hidden state dari layer terakhir. Representasi token diproses menggunakan 'Mean Pooling' untuk menghasilkan satu vektor semantik padat berdimensi 768 untuk masing-masing judul.
+
+4. Cosine Similarity Calculation:
+   Kesamaan semantik dihitung dengan formula Cosine Similarity:
+   Similarity = (A . B) / (||A|| * ||B||)
+   Di mana A adalah vektor skripsi mahasiswa dan B adalah matriks vektor seluruh jurnal dosen pembimbing yang ada di database. Kalkulasi dijalankan secara instan menggunakan PyTorch / NumPy Vectorized Operations.
+
+5. Aggregating & Sorting:
+   Hasil kalkulasi diurutkan dari nilai kesamaan tertinggi, dikelompokkan berdasarkan ID dosen, dan dikembalikan ke API Gateway Laravel dalam hitungan milidetik.`;
+
+  const sectionsSecurity = [
     {
-      id: "sec-1",
+      id: "sec-s1",
       title: "1. EdTech UI/UX & Branding Deconstruction",
       icon: <Layers className="w-5 h-5 text-blue-600" />,
       text: `A. Analisis Landing Page: Mengapa "Clean Academic SaaS" Sangat Tepat untuk Kampus
 Pendekatan visual "Clean Academic SaaS" dengan dominasi ruang negatif (negative space), sudut tumpul lembut (rounded corners), dan tata letak lapang (spacious padding) memberikan dampak psikologis signifikan dalam lingkungan institusi pendidikan tinggi. 
 
 - Mereduksi Kecemasan Administratif: Proses penentuan dosen pembimbing skripsi sering kali dipandang menegangkan dan membingungkan oleh mahasiswa. Desain yang bersih dan terstruktur mereduksi "cognitive overload," mengubah persepsi birokrasi kampus menjadi alur kerja modern yang transparan dan bersahabat.
-- Tipografi Poppins: Pemilihan font Poppins secara eksklusif memberikan estetika kontemporer yang ramah dan berwibawa. Karakter geometris sans-serif sans-serif yang seimbang menjaga legibilitas tinggi, baik pada layar desktop beresolusi tinggi maupun perangkat mobile, melambangkan modernitas UDB yang responsif terhadap inovasi digital.
+- Tipografi Poppins: Pemilihan font Poppins secara eksklusif memberikan estetika kontemporer yang ramah dan berwibawa. Karakter geometris sans-serif yang seimbang menjaga legibilitas tinggi, baik pada layar desktop beresolusi tinggi maupun perangkat mobile, melambangkan modernitas UDB yang responsif terhadap inovasi digital.
 - Kepercayaan Akademik: Konsistensi elemen UI menunjukkan tingkat profesionalisme tinggi, mempertegas identitas Universitas Duta Bangsa (UDB) sebagai "The Global Entrepreneur University" yang mengadopsi teknologi terdepan secara andal.
 
 B. XAI (Explainable AI) Visualization: Peran Simbolisme dan Label Teknis
@@ -108,7 +207,7 @@ Algoritma AI sering dianggap sebagai "kotak hitam" (Black Box) yang memicu kerag
   - Cosine_Sim bertindak sebagai indikator derajat kedekatan sudut antar-vektor dalam ruang euklidian, mempertegas kecocokan ilmiah berbasis jejak digital publikasi jurnal dosen di SINTA dan Google Scholar.`
     },
     {
-      id: "sec-2",
+      id: "sec-s2",
       title: "2. Real-Account Security Architecture",
       icon: <ShieldCheck className="w-5 h-5 text-green-600" />,
       text: `A. Perancangan Halaman Login: Implementasi "Blind Input" Murni
@@ -124,7 +223,7 @@ Keamanan rute dan hak akses dalam DOSENMATCH AI mengadopsi prinsip pertahanan be
 - Validasi Database Sisi Server: Setiap permintaan endpoint API dilindungi oleh middleware otorisasi yang mendekripsi JWT secara real-time dan memeriksa kecocokan peran langsung ke schema database. Jika pengguna mencoba mengakses dashboard Kaprodi (misalnya mengubah penetapan kuota dosen) menggunakan peran Mahasiswa, backend secara otomatis memutus koneksi dan mencatat log upaya intrusi keamanan.`
     },
     {
-      id: "sec-3",
+      id: "sec-s3",
       title: "3. The Real-Data AI Pipeline (End-To-End Workflow)",
       icon: <Cpu className="w-5 h-5 text-indigo-600" />,
       text: `Alur kerja pemrosesan pencocokan dosen pembimbing dari masukan awal hingga keluaran rekomendasi dirinci sebagai berikut:
@@ -155,14 +254,113 @@ Sistem mengurutkan nilai Cosine Similarity tertinggi dan menyaring 3 kandidat do
     }
   ];
 
+  const sectionsBackendAi = [
+    {
+      id: "sec-b1",
+      title: "1. Database Schema Analysis (One-to-Many)",
+      icon: <Database className="w-5 h-5 text-blue-600" />,
+      text: `A. Analisis Struktur Relasi Entitas (Database Schema)
+Berdasarkan skrip DDL SQL yang diajukan, rancangan basis data relational dikonfigurasi sebagai berikut:
+- Tabel 'users': Berfungsi sebagai master data otentikasi (NIM/NIDN, email, password terenkripsi, dan payload role akademik).
+- Tabel 'dosen': Menyimpan profil primer pengajar (nidn, nama_lengkap, bidang_keahlian, sinta_id). Relasinya adalah One-to-One dengan tabel 'users' untuk penanganan profil personal yang aman.
+- Tabel 'jurnal_dosen': Menyimpan daftar karya ilmiah acuan dosen (judul_jurnal, kata_kunci) yang diikat oleh Foreign Key 'dosen_id' merujuk ke tabel 'dosen'.
+
+B. Urgensi Akademis Pemisahan Tabel (One-to-Many Relationship) untuk Vektorisasi AI
+Pemisahan tabel 'dosen' dan 'jurnal_dosen' merupakan keputusan desain arsitektural yang mutlak krusial untuk keberhasilan pemodelan representasi semantik berbasis NLP. Menggabungkannya menjadi satu baris tunggal dalam database akan memicu kegagalan sistemik karena:
+
+1. Mencegah Gejala "Semantic Dilution" (Pengenceran Makna Semantik):
+   Jika seluruh karya ilmiah seorang dosen digabungkan ke dalam satu kolom teks (misalnya concatenating judul jurnal), maka model BERT akan memproses satu dokumen panjang berskala besar. Hal ini menyebabkan bobot vektor representatif (dense vector) 768 dimensi meluber (diluted), sehingga fokus keahlian spesifik dosen yang tersebar pada jurnal berbeda akan kehilangan bobot tajamnya. Melalui pemisahan One-to-Many, setiap paper diindeks sebagai satu entitas vektor independen berpresisi tinggi.
+
+2. Skalabilitas Korpus Vektor Dinamis:
+   Dosen secara aktif mempublikasikan jurnal ilmiah baru setiap semester. Struktur One-to-Many memungkinkan penambahan paper baru melalui instruksi INSERT sederhana ke tabel 'jurnal_dosen' tanpa menduplikasi data master dosen. Hal ini memastikan konsistensi relasional dan normalisasi tingkat ketiga (3NF).
+
+3. Batch Matrix Computation Efficiency:
+   AI Microservice dapat menghitung Cosine Similarity secara instan menggunakan komputasi matriks paralel di GPU/CPU terhadap korpus jurnal individual, kemudian menggunakan reduksi nilai maks (Max-Pooling) untuk mengidentifikasi paper paling relevan dari dosen tertentu.`
+    },
+    {
+      id: "sec-b2",
+      title: "2. Laravel Backend Logic (API Gateway Router)",
+      icon: <Network className="w-5 h-5 text-purple-600" />,
+      text: `Laravel diposisikan sebagai API Gateway berkinerja tinggi yang mengelola autentikasi, transaksi data, dan proksiasi request ke layanan Python NLP.
+
+Alur Urutan (Sequence Workflow) Eksekusi API Endpoint:
+1. Client (React Frontend):
+   Mengirimkan HTTP POST Request ke endpoint '/api/v1/dosen-match/analyze' dengan payload JSON:
+   { "judul_skripsi": "...", "abstrak_rencana": "..." }
+
+2. Authentication Layer (Laravel Middleware):
+   Request dinterseptasi oleh Middleware 'auth:sanctum' atau JWT Guard. Laravel mengonfirmasi kevalidan token dari HTTP Header Bearer, memverifikasi user di tabel 'users', dan memastikan peran pengguna adalah 'mahasiswa'.
+
+3. Gateway Proxy Dispatching (GuzzleHTTP / Laravel Http Client):
+   Laravel menyusun ulang payload bersih dan meneruskannya via internal REST call ke Microservice Python FastAPI:
+   Endpoint: POST http://python-ai-service:8000/api/v1/similarity/calculate
+   Payload:
+   {
+     "judul": "...", 
+     "abstrak": "...",
+     "jurnal_korpus": [ ... ] // Opsional: Berisi dump dari jurnal_dosen ter-cache
+   }
+
+4. Microservice Evaluation Response:
+   Python mengembalikan data kecocokan semantik dalam format JSON terkompresi:
+   {
+     "status": "success",
+     "matches": [
+       { "dosen_id": 1, "jurnal_id": 12, "similarity_score": 0.92 },
+       { "dosen_id": 6, "jurnal_id": 4, "similarity_score": 0.85 }
+     ]
+   }
+
+5. Data Enrichment & Hydration:
+   Laravel menangkap respons dari Python, kemudian mengeksekusi Query Join ke database SQL lokal:
+   SELECT d.*, jd.judul_jurnal, jd.kata_kunci 
+   FROM dosen d 
+   JOIN jurnal_dosen jd ON d.id = jd.dosen_id 
+   WHERE jd.id IN (12, 4)
+   
+   Laravel melengkapi data profil dosen secara riil dan menyajikannya dalam struktur payload final yang dikembalikan ke Frontend React dengan HTTP 200 OK.`
+    },
+    {
+      id: "sec-b3",
+      title: "3. Python AI Microservice (NLP Pipeline)",
+      icon: <Cpu className="w-5 h-5 text-indigo-600" />,
+      text: `AI Microservice dirancang menggunakan Python dengan framework ASGI FastAPI untuk mendukung penanganan komputasi pembelajaran mendalam (Deep Learning) secara asinkron.
+
+Step-by-Step NLP Pipeline & Konektivitas Database:
+1. Ingestion & Database Integration:
+   Python berinteraksi dengan database SQL menggunakan SQLAlchemy ORM atau raw Driver Asyncpg. Pada saat boot-up, Python memuat seluruh korpus tabel 'jurnal_dosen' ke dalam RAM / Cache memori untuk operasi berkecepatan tinggi.
+   Query: "SELECT id, dosen_id, judul_jurnal, kata_kunci FROM jurnal_dosen"
+
+2. Text Preprocessing Pipeline:
+   Setiap entri dari kolom 'judul_jurnal' dan input dari mahasiswa dilewatkan pada pipeline standardisasi:
+   - Case Folding: Mengubah seluruh huruf menjadi huruf kecil.
+   - Filtering: Menghapus tanda baca, spasi berlebih, dan angka menggunakan regex.
+   - Stopwords Removal: Menghapus kata-kata tidak bermakna spesifik (seperti 'dan', 'dengan', 'yang', 'pada', 'analisis', 'penerapan') menggunakan corpus dari library Sastrawi atau NLTK.
+
+3. IndoBERT Embedding Generation:
+   - Teks yang telah bersih diumpankan ke 'indobenchmark/indobert-base-p1' Tokenizer untuk diubah menjadi token numerik (input_ids, attention_mask).
+   - Token tersebut dikirim ke model PyTorch IndoBERT Encoder.
+   - Mengekstrak output hidden state dari layer terakhir. Representasi token diproses menggunakan 'Mean Pooling' untuk menghasilkan satu vektor semantik padat berdimensi 768 untuk masing-masing judul.
+
+4. Cosine Similarity Calculation:
+   Kesamaan semantik dihitung dengan formula Cosine Similarity:
+   Similarity = (A . B) / (||A|| * ||B||)
+   Di mana A adalah vektor skripsi mahasiswa dan B adalah matriks vektor seluruh jurnal dosen pembimbing yang ada di database. Kalkulasi dijalankan secara instan menggunakan PyTorch / NumPy Vectorized Operations.
+
+5. Aggregating & Sorting:
+   Hasil kalkulasi diurutkan dari nilai kesamaan tertinggi, dikelompokkan berdasarkan ID dosen, dan dikembalikan ke API Gateway Laravel dalam hitungan milidetik.`
+    }
+  ];
+
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4" id="blueprint-hub">
+    <div className="max-w-4xl mx-auto py-8 px-4 font-sans" id="blueprint-hub">
       <div className="bg-white rounded-2xl border border-slate-100 p-8 shadow-sm">
+        {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 pb-6 border-b border-slate-100">
           <div>
             <div className="flex items-center gap-2 text-blue-600 mb-1">
               <BookOpen className="w-5 h-5" />
-              <span className="text-xs font-semibold tracking-wider uppercase font-mono">DosenMatch AI - Blueprint Arsitektur</span>
+              <span className="text-xs font-semibold tracking-wider uppercase font-mono">DosenMatch AI - Blueprint Hub</span>
             </div>
             <h1 className="text-2xl font-bold text-slate-800 tracking-tight font-sans">
               Spesifikasi Arsitektur Sistem & AI (Laporan UAS)
@@ -172,41 +370,73 @@ Sistem mengurutkan nilai Cosine Similarity tertinggi dan menyaring 3 kandidat do
             </p>
           </div>
           <button
-            onClick={() => downloadText("blueprint_dosenmatch_ai_uas.txt", blueprintFullText)}
+            onClick={() => {
+              if (activeTab === "security") {
+                downloadText("blueprint_dosenmatch_ai_security_uas.txt", blueprintFullTextSecurity);
+              } else {
+                downloadText("blueprint_dosenmatch_ai_backend_ai_uas.txt", blueprintFullTextBackendAi);
+              }
+            }}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs py-2.5 px-4 rounded-xl transition duration-150 cursor-pointer shadow-sm shadow-blue-100 font-sans"
             id="btn-download-full-blueprint"
           >
             <Download className="w-4 h-4" />
-            Unduh Blueprint Lengkap (.txt)
+            Unduh Blueprint Aktif (.txt)
           </button>
         </div>
 
         {/* Academic Meta Info */}
-        <div className="bg-slate-50 rounded-xl p-4 mb-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-sans border border-slate-100">
+        <div className="bg-slate-50 rounded-xl p-4 mb-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-sans border border-slate-100">
           <div>
             <span className="text-slate-400 block uppercase font-mono tracking-wider mb-0.5">Penulis Blueprint</span>
-            <span className="font-semibold text-slate-700">Apex System Architect & AI Researcher</span>
+            <span className="font-semibold text-slate-700">Apex Backend Architect & AI Engineer</span>
           </div>
           <div>
             <span className="text-slate-400 block uppercase font-mono tracking-wider mb-0.5">Studi Kasus</span>
             <span className="font-semibold text-slate-700">Teknik Informatika UDB</span>
           </div>
           <div>
-            <span className="text-slate-400 block uppercase font-mono tracking-wider mb-0.5">Data Acuan AI</span>
-            <span className="font-semibold text-slate-700">100% Jejak Digital Publikasi Riil</span>
+            <span className="text-slate-400 block uppercase font-mono tracking-wider mb-0.5">Model NLP</span>
+            <span className="font-semibold text-slate-700">IndoBERT (768 Dimensi)</span>
           </div>
           <div>
             <span className="text-slate-400 block uppercase font-mono tracking-wider mb-0.5">Status Dokumen</span>
             <span className="font-semibold text-emerald-600 flex items-center gap-1 font-mono">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              TERVERTIFIKASI UAS
+              TERVERIFIKASI UAS
             </span>
           </div>
         </div>
 
+        {/* Dynamic Dual-Tab Navigation */}
+        <div className="flex border-b border-slate-100 mb-8" id="blueprint-navigation-tabs">
+          <button
+            onClick={() => setActiveTab("security")}
+            className={`flex-1 pb-3 text-xs font-semibold uppercase tracking-wider border-b-2 transition duration-150 cursor-pointer ${
+              activeTab === "security"
+                ? "border-blue-600 text-blue-600 font-bold"
+                : "border-transparent text-slate-400 hover:text-slate-600"
+            }`}
+            id="tab-security-blueprint"
+          >
+            UI/UX, XAI & Keamanan Akun
+          </button>
+          <button
+            onClick={() => setActiveTab("backend-ai")}
+            className={`flex-1 pb-3 text-xs font-semibold uppercase tracking-wider border-b-2 transition duration-150 cursor-pointer ${
+              activeTab === "backend-ai"
+                ? "border-blue-600 text-blue-600 font-bold"
+                : "border-transparent text-slate-400 hover:text-slate-600"
+            }`}
+            id="tab-backend-ai-blueprint"
+          >
+            Database, Laravel Gateway & Python NLP
+          </button>
+        </div>
+
         {/* Blueprint Body Sections */}
         <div className="space-y-8">
-          {sections.map((sec) => (
+          {(activeTab === "security" ? sectionsSecurity : sectionsBackendAi).map((sec) => (
             <div key={sec.id} className="group relative border border-slate-100 hover:border-blue-100 rounded-xl p-6 transition duration-200 bg-white" id={`card-sec-${sec.id}`}>
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-3">
@@ -245,7 +475,7 @@ Sistem mengurutkan nilai Cosine Similarity tertinggi dan menyaring 3 kandidat do
 
         {/* Academic Footnote */}
         <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center text-[10px] text-slate-400 font-mono gap-2">
-          <span>© 2026 DosenMatch AI System Architect - Universitas Duta Bangsa</span>
+          <span>© 2026 DosenMatch AI Apex System Architect - Universitas Duta Bangsa</span>
           <span>Dokumen Terstruktur Standar IEEE / Ristekdikti</span>
         </div>
       </div>

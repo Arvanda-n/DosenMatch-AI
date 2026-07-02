@@ -26,100 +26,224 @@ const ai = process.env.GEMINI_API_KEY
 // Lecturer database (Real UDB FIKOM Lecturers)
 const LECTURERS = [
   {
-    id: "lec-1",
-    name: "Tomoliyus, M.Cs.",
-    nidn: "0627018301",
+    id: "udb-1",
+    name: "Afu Ichsan Pradana, S.Kom., M.Kom.",
+    nidn: "06114050",
     role: "Lektor",
-    focus: "Data Mining, Machine Learning, Decision Support System (DSS)",
+    focus: "Embedded System, Internet of Things, Computer Engineering, Information System, Artificial Intelligence",
     publications: [
-      "Penerapan Algoritma Naive Bayes Untuk Prediksi Kelulusan Mahasiswa Tepat Waktu",
-      "Sistem Pendukung Keputusan Pemilihan Karyawan Terbaik Menggunakan Metode AHP dan TOPSIS",
-      "Analisis Sentimen Ulasan Aplikasi Dompet Digital Menggunakan Support Vector Machine (SVM)"
-    ]
+      "Pengembangan Sistem Perhitungan Jumlah Kendaraan Berdasarkan Jenis Kendaraan Menggunakan Algoritma YOLO Secara Realtime"
+    ],
+    keywords: ["YOLO", "Computer Vision", "Deep Learning", "Object Detection", "IoT", "Smart Farming", "Greenhouse", "Blynk"]
   },
   {
-    id: "lec-2",
-    name: "Wijiyanto, M.Pd., M.Kom.",
-    nidn: "0605058702",
+    id: "udb-2",
+    name: "Aprilisa Arum Sari, S.T., M.Kom.",
+    nidn: "06875925",
+    role: "Lektor",
+    focus: "Data Mining, Machine Learning, Artificial Intelligence, Recommendation System",
+    publications: [
+      "Prototype Sistem Rekomendasi Pemilihan Produk Furniture dengan Pemodelan Content-Based Filtering"
+    ],
+    keywords: ["Recommendation System", "Content Based Filtering", "Artificial Intelligence", "Naive Bayes", "NLP", "Sentiment Analysis"]
+  },
+  {
+    id: "udb-3",
+    name: "Dwi Hartanti, S.Kom., M.Kom.",
+    nidn: "TEMP_NIDN_3",
+    role: "Lektor",
+    focus: "Artificial Intelligence, Data Mining, Recommendation System, Internet of Things",
+    publications: [
+      "Penerapan Metode Content-Based Filtering Pada Sistem Rekomendasi Pemilihan Produk Obat"
+    ],
+    keywords: ["Internet of Things", "Embedded System", "Smart Home", "Recommendation System", "Content Based Filtering", "Data Mining"]
+  },
+  {
+    id: "udb-4",
+    name: "Joni Maulindar, S.Kom., M.Eng.",
+    nidn: "06042057",
+    role: "Lektor",
+    focus: "Decision Support System, Information System, Recommendation System, E-Commerce",
+    publications: [
+      "Sistem Rekomendasi Kuliner Karanganyar Menggunakan Metode Hybrid Recommendation"
+    ],
+    keywords: ["Recommendation System", "Hybrid Recommendation", "E-Commerce", "Information System", "Digital Business", "IoT", "Blynk"]
+  },
+  {
+    id: "udb-5",
+    name: "Nurchim, S.Kom., M.Kom.",
+    nidn: "TEMP_NIDN_5",
+    role: "Lektor",
+    focus: "Rekayasa Perangkat Lunak, Internet of Things, Web Development, Computer Network",
+    publications: [
+      "Sistem Irigasi Cerdas Berbasis IoT Pada Tanaman Tomat dan Cabai"
+    ],
+    keywords: ["IoT", "Smart Farming", "Computer Network", "Web Development", "Laravel", "Software Engineering"]
+  },
+  {
+    id: "udb-6",
+    name: "Wijiyanto, S.Kom., M.Pd., M.Kom.",
+    nidn: "TEMP_NIDN_6",
     role: "Lektor Kepala",
-    focus: "Educational Technology, AI in Education, Human-Computer Interaction",
+    focus: "Machine Learning, Data Mining, Decision Support System, Artificial Intelligence",
     publications: [
-      "Pengembangan Media Pembelajaran Interaktif Berbasis Augmented Reality untuk Sekolah Menengah",
-      "Analisis Efektivitas Pembelajaran Daring Menggunakan Framework COBIT 5",
-      "Implementasi Gamifikasi Untuk Meningkatkan Keterlibatan Siswa Dalam Platform E-Learning"
-    ]
+      "Analisis Prediksi Kelulusan Mahasiswa Menggunakan Support Vector Machine"
+    ],
+    keywords: ["Machine Learning", "SVM", "Prediksi", "DSS", "SAW", "Decision Support System", "Data Mining"]
   },
   {
-    id: "lec-3",
-    name: "Sopingi, M.Kom.",
-    nidn: "0612108103",
-    role: "Asisten Ahli",
-    focus: "Computer Vision, Image Processing, Artificial Intelligence",
-    publications: [
-      "Deteksi Retakan Aspal Jalan Menggunakan Segmentasi Citra Berbasis Jaringan Saraf Tiruan",
-      "Penerapan Filter Gaussian Untuk Reduksi Noise Pada Citra Medis Rontgen Paru",
-      "Sistem Klasifikasi Kematangan Buah Berdasarkan Analisis Warna Dan Tekstur Menggunakan KNN"
-    ]
-  },
-  {
-    id: "lec-4",
-    name: "Joni Mawardi, M.Kom.",
-    nidn: "0623048501",
+    id: "udb-7",
+    name: "Bondan Wahyu Pamekas, S.Kom., M.Kom.",
+    nidn: "TEMP_NIDN_7",
     role: "Lektor",
-    focus: "Computer Network, Internet of Things (IoT), Network Security",
+    focus: "Information System, Software Engineering, Web Development, E-Government",
     publications: [
-      "Analisis Kinerja Routing Protokol OSPF dan EIGRP Pada Jaringan Enterprise Universitas",
-      "Prototipe Sistem Monitoring Kebocoran Gas Menggunakan Mikrokontroler ESP8266 Berbasis IoT",
-      "Implementasi Firewall Rule Untuk Mitigasi Serangan DDoS Pada Web Server"
-    ]
+      "Pengembangan Sistem Informasi Akademik Berbasis Web Menggunakan Framework Laravel"
+    ],
+    keywords: ["Web Development", "Laravel", "Information System", "E-Government"]
   },
   {
-    id: "lec-5",
-    name: "Drs. Singgih Purnomo, M.M.",
-    nidn: "0614036501",
-    role: "Profesor / Pembina Utama",
-    focus: "Information Systems Security, IT Governance, Decision Support Systems",
-    publications: [
-      "Audit Keamanan Sistem Informasi Akademik Menggunakan Framework COBIT 2019",
-      "Strategi Pengembangan Keamanan Informasi Berdasarkan Standardisasi ISO 27001",
-      "Analisis Faktor Keberhasilan Penerapan E-Government Di Lingkungan Pemerintah Daerah"
-    ]
-  },
-  {
-    id: "lec-6",
-    name: "Agus Luthfi, M.Kom.",
-    nidn: "0602088002",
+    id: "udb-8",
+    name: "Nibras Faiq Muhammad, M.Kom.",
+    nidn: "TEMP_NIDN_8",
     role: "Lektor",
-    focus: "Software Engineering, Enterprise Architecture, Web Development",
+    focus: "Artificial Intelligence, Machine Learning, Data Mining, Recommendation System",
     publications: [
-      "Rancang Bangun Sistem Informasi Manajemen Aset Berbasis Web Menggunakan Metodologi Agile",
-      "Analisis Usabilitas Aplikasi Mobile Banking Menggunakan System Usability Scale (SUS)",
-      "Implementasi Service Oriented Architecture (SOA) Pada Integrasi Sistem Informasi Akademik"
-    ]
+      "Sistem Rekomendasi Produk UMKM Menggunakan Collaborative Filtering"
+    ],
+    keywords: ["Recommendation System", "Collaborative Filtering", "KNN", "Machine Learning", "Classification"]
   },
   {
-    id: "lec-7",
-    name: "Rina Wijayanti, M.Kom.",
-    nidn: "0615118801",
-    role: "Asisten Ahli",
-    focus: "Geographic Information Systems (GIS), Databases, Mobile Apps",
+    id: "udb-9",
+    name: "Indah Wahyu Utami, S.T., M.Si., Ph.D.",
+    nidn: "TEMP_NIDN_9",
+    role: "Lektor Kepala / Ph.D.",
+    focus: "Data Mining, Algorithm Analysis, Database, Artificial Intelligence",
     publications: [
-      "Pemetaan Lokasi Wisata Kuliner Menggunakan Web GIS Berbasis Leaflet.js",
-      "Perancangan Basis Data Relasional Untuk Sistem Penjualan Multi-tenant E-Commerce",
-      "Sistem Monitoring Rute Kurir Pengiriman Paket Menggunakan Google Maps API dan GPS"
-    ]
+      "Analisis Algoritma Apriori dalam Market Basket Analysis"
+    ],
+    keywords: ["Data Mining", "Apriori", "Association Rule", "Database", "Optimization", "SQL"]
   },
   {
-    id: "lec-8",
-    name: "Eko Setyawan, M.Kom.",
-    nidn: "0608098403",
+    id: "udb-10",
+    name: "Herliyani Hasanah, S.T., M.T.",
+    nidn: "TEMP_NIDN_10",
     role: "Lektor",
-    focus: "Cryptography, Cloud Computing, Cyber Security",
+    focus: "Software Engineering, Information System, Web Development",
     publications: [
-      "Analisis Perbandingan Enkripsi Data Menggunakan Algoritma AES dan Blowfish",
-      "Implementasi Keamanan Jaringan Berbasis Port Knocking Pada Server Ubuntu Virtual",
-      "Optimalisasi Kinerja Virtual Machine Pada Lingkungan Cloud Private Proxmox VE"
-    ]
+      "Perancangan Sistem Informasi Berbasis Web untuk Manajemen Data Akademik"
+    ],
+    keywords: ["Web Development", "Information System", "Software Engineering", "MVC"]
+  },
+  {
+    id: "udb-11",
+    name: "Pramono, S.Kom., M.Kom.",
+    nidn: "TEMP_NIDN_11",
+    role: "Lektor",
+    focus: "Software Engineering, Web Development, Information System, Database System",
+    publications: [
+      "Pengembangan Sistem Informasi Akademik Berbasis Web Menggunakan Laravel"
+    ],
+    keywords: ["Web Development", "Laravel", "Information System", "Database", "Distributed System"]
+  },
+  {
+    id: "udb-12",
+    name: "Nurchim, S.Kom., M.Kom.",
+    nidn: "TEMP_NIDN_12",
+    role: "Lektor",
+    focus: "Internet of Things, Embedded System, Computer Network, Smart System",
+    publications: [
+      "Sistem Monitoring Suhu dan Kelembaban Berbasis IoT Menggunakan ESP32"
+    ],
+    keywords: ["IoT", "ESP32", "Smart System", "Smart Farming", "Embedded System"]
+  },
+  {
+    id: "udb-13",
+    name: "Nugroho Arif Sudibyo, S.Si., M.Pd.",
+    nidn: "TEMP_NIDN_13",
+    role: "Lektor",
+    focus: "Data Mining, Educational Technology, Statistics, Learning Analytics",
+    publications: [
+      "Analisis Hasil Belajar Mahasiswa Menggunakan Data Mining"
+    ],
+    keywords: ["Data Mining", "Education", "Analytics", "Statistics", "Prediction"]
+  },
+  {
+    id: "udb-14",
+    name: "Agustina Purwatiningsih, S.Kom., M.Cs.",
+    nidn: "TEMP_NIDN_14",
+    role: "Lektor",
+    focus: "Artificial Intelligence, Machine Learning, Data Mining, Algorithm Design",
+    publications: [
+      "Penerapan K-Means Clustering untuk Segmentasi Data Mahasiswa"
+    ],
+    keywords: ["Clustering", "K-Means", "Data Mining", "Machine Learning", "Classification"]
+  },
+  {
+    id: "udb-15",
+    name: "Agustina Srirahayu, S.Kom., M.Kom.",
+    nidn: "TEMP_NIDN_15",
+    role: "Lektor",
+    focus: "Information System, Software Engineering, Database, Web Development",
+    publications: [
+      "Pengembangan Sistem Informasi Berbasis Web untuk Manajemen Data Akademik"
+    ],
+    keywords: ["Web Development", "Information System", "Database"]
+  },
+  {
+    id: "udb-16",
+    name: "Ridwan Dwi Irawan, S.Kom., M.Kom.",
+    nidn: "TEMP_NIDN_16",
+    role: "Lektor",
+    focus: "Machine Learning, Data Mining, Artificial Intelligence, Recommendation System",
+    publications: [
+      "Implementasi Machine Learning untuk Prediksi Kelulusan Mahasiswa"
+    ],
+    keywords: ["Machine Learning", "Prediction", "Education", "Recommendation System", "Collaborative Filtering", "Data Mining"]
+  },
+  {
+    id: "udb-17",
+    name: "Tominanto, S.Kom., M.Cs.",
+    nidn: "TEMP_NIDN_17",
+    role: "Lektor",
+    focus: "Software Engineering, Web Development, Information System, Database System",
+    publications: [
+      "Perancangan Sistem Informasi Akademik Berbasis Web"
+    ],
+    keywords: ["Web Development", "Information System", "Database", "Optimization"]
+  },
+  {
+    id: "udb-18",
+    name: "Triana, S.Kom., M.Kom.",
+    nidn: "TEMP_NIDN_18",
+    role: "Lektor",
+    focus: "Artificial Intelligence, Machine Learning, Data Mining",
+    publications: [
+      "Klasifikasi Data Menggunakan Algoritma Naive Bayes"
+    ],
+    keywords: ["Machine Learning", "Naive Bayes", "NLP", "Sentiment Analysis", "Data Mining"]
+  },
+  {
+    id: "udb-19",
+    name: "Vihi Atina, S.Kom., M.Kom.",
+    nidn: "TEMP_NIDN_19",
+    role: "Lektor",
+    focus: "Information System, Web Development, Software Engineering",
+    publications: [
+      "Pengembangan Sistem Informasi Manajemen Data Mahasiswa"
+    ],
+    keywords: ["Information System", "Web Development", "Software Engineering", "MVC"]
+  },
+  {
+    id: "udb-20",
+    name: "Wijiyanto, S.Kom., M.Pd., M.Kom.",
+    nidn: "TEMP_NIDN_20",
+    role: "Lektor Kepala",
+    focus: "Machine Learning, Data Mining, Decision Support System, Artificial Intelligence",
+    publications: [
+      "Penerapan Support Vector Machine untuk Klasifikasi Data Akademik"
+    ],
+    keywords: ["SVM", "Machine Learning", "Classification", "Data Mining", "Education Analytics"]
   }
 ];
 
@@ -212,126 +336,70 @@ Keluaran harus berformat JSON murni tanpa markdown block. JSON harus berupa arra
 
 // Mock/simulation helper if Gemini is offline
 function simulateMatching(title: string, abstract: string) {
-  const lowercaseTitle = (title + " " + abstract).toLowerCase();
+  const combinedText = (title + " " + abstract).toLowerCase();
   
-  // Scoring logic based on keywords
+  const STOPWORDS = new Set([
+    "dan", "yang", "di", "ke", "dari", "untuk", "dengan", "pada", "dalam", "sistem", "aplikasi", "pengembangan", "analisis", "penerapan", "perancangan", "berbasis", "menggunakan", "metode", "secara", "tentang", "sebagai", "terhadap", "studi", "kasus", "prodi", "teknik", "informatika", "universitas", "duta", "bangsa", "udb", "surakarta", "skripsi", "tugas", "akhir"
+  ]);
+
+  const inputWords = combinedText
+    .replace(/[^a-z0-9\s-]/g, " ")
+    .split(/\s+/)
+    .filter(w => w.length > 2 && !STOPWORDS.has(w));
+
   const scores = LECTURERS.map((lec) => {
-    let baseScore = 0.15; // default low similarity
-    let keywords: string[] = [];
-    let matchedPub = lec.publications[0];
+    let keywordMatches = 0;
+    const matchedKws: string[] = [];
 
-    // Simple rule-based keyword boosting
-    if (lec.id === "lec-1") { // Data Mining, ML, DSS
-      if (lowercaseTitle.includes("naive bayes") || lowercaseTitle.includes("bayes") || lowercaseTitle.includes("klasifikasi")) {
-        baseScore += 0.65;
-        keywords.push("Naive Bayes", "Klasifikasi");
-        matchedPub = lec.publications[0];
+    lec.keywords.forEach(kw => {
+      const kwLow = kw.toLowerCase();
+      if (combinedText.includes(kwLow)) {
+        keywordMatches++;
+        if (!matchedKws.includes(kw)) {
+          matchedKws.push(kw);
+        }
       }
-      if (lowercaseTitle.includes("decision") || lowercaseTitle.includes("keputusan") || lowercaseTitle.includes("spk") || lowercaseTitle.includes("ahp") || lowercaseTitle.includes("topsis")) {
-        baseScore += 0.55;
-        keywords.push("DSS", "Metode Keputusan");
-        matchedPub = lec.publications[1];
+    });
+
+    const keahlianWords = lec.focus
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, " ")
+      .split(/\s+/)
+      .filter(w => w.length > 2 && !STOPWORDS.has(w));
+
+    let keahlianMatches = 0;
+    keahlianWords.forEach(word => {
+      if (inputWords.includes(word)) {
+        keahlianMatches++;
       }
-      if (lowercaseTitle.includes("svm") || lowercaseTitle.includes("sentimen") || lowercaseTitle.includes("mining") || lowercaseTitle.includes("text")) {
-        baseScore += 0.60;
-        keywords.push("Data Mining", "SVM");
-        matchedPub = lec.publications[2];
+    });
+
+    const jurnalWords = lec.publications[0]
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, " ")
+      .split(/\s+/)
+      .filter(w => w.length > 2 && !STOPWORDS.has(w));
+
+    let jurnalMatches = 0;
+    jurnalWords.forEach(word => {
+      if (inputWords.includes(word)) {
+        jurnalMatches++;
       }
-    } else if (lec.id === "lec-2") { // EdTech, E-learning
-      if (lowercaseTitle.includes("pembelajaran") || lowercaseTitle.includes("learning") || lowercaseTitle.includes("daring") || lowercaseTitle.includes("online")) {
-        baseScore += 0.70;
-        keywords.push("E-Learning", "Metode Pembelajaran");
-        matchedPub = lec.publications[1];
-      }
-      if (lowercaseTitle.includes("game") || lowercaseTitle.includes("gamifikasi") || lowercaseTitle.includes("interaktif")) {
-        baseScore += 0.65;
-        keywords.push("Gamifikasi", "Interaktif");
-        matchedPub = lec.publications[2];
-      }
-    } else if (lec.id === "lec-3") { // Computer Vision, Neural Nets, Image
-      if (lowercaseTitle.includes("citra") || lowercaseTitle.includes("image") || lowercaseTitle.includes("vision") || lowercaseTitle.includes("deteksi")) {
-        baseScore += 0.75;
-        keywords.push("Computer Vision", "Pengolahan Citra");
-        matchedPub = lec.publications[0];
-      }
-      if (lowercaseTitle.includes("knn") || lowercaseTitle.includes("neural") || lowercaseTitle.includes("saraf") || lowercaseTitle.includes("klasifikasi buah")) {
-        baseScore += 0.65;
-        keywords.push("Artificial Intelligence", "KNN");
-        matchedPub = lec.publications[2];
-      }
-    } else if (lec.id === "lec-4") { // Networks, IoT
-      if (lowercaseTitle.includes("jaringan") || lowercaseTitle.includes("network") || lowercaseTitle.includes("routing") || lowercaseTitle.includes("ospf")) {
-        baseScore += 0.75;
-        keywords.push("Jaringan Komputer", "Routing");
-        matchedPub = lec.publications[0];
-      }
-      if (lowercaseTitle.includes("iot") || lowercaseTitle.includes("internet of things") || lowercaseTitle.includes("sensor") || lowercaseTitle.includes("esp8266")) {
-        baseScore += 0.70;
-        keywords.push("Internet of Things", "Sensor");
-        matchedPub = lec.publications[1];
-      }
-    } else if (lec.id === "lec-5") { // Security, COBIT
-      if (lowercaseTitle.includes("audit") || lowercaseTitle.includes("cobit") || lowercaseTitle.includes("tata kelola")) {
-        baseScore += 0.75;
-        keywords.push("IT Governance", "COBIT 2019");
-        matchedPub = lec.publications[0];
-      }
-      if (lowercaseTitle.includes("keamanan") || lowercaseTitle.includes("security") || lowercaseTitle.includes("iso")) {
-        baseScore += 0.70;
-        keywords.push("Security Policy", "ISO 27001");
-        matchedPub = lec.publications[1];
-      }
-    } else if (lec.id === "lec-6") { // Agile, Software Eng
-      if (lowercaseTitle.includes("web") || lowercaseTitle.includes("sistem informasi") || lowercaseTitle.includes("aplikasi") || lowercaseTitle.includes("rancang")) {
-        baseScore += 0.60;
-        keywords.push("RPL", "Sistem Informasi");
-        matchedPub = lec.publications[0];
-      }
-      if (lowercaseTitle.includes("usability") || lowercaseTitle.includes("sus") || lowercaseTitle.includes("evaluasi")) {
-        baseScore += 0.70;
-        keywords.push("User Experience", "SUS Method");
-        matchedPub = lec.publications[1];
-      }
-    } else if (lec.id === "lec-7") { // GIS, Maps
-      if (lowercaseTitle.includes("gis") || lowercaseTitle.includes("pemetaan") || lowercaseTitle.includes("peta") || lowercaseTitle.includes("geografis")) {
-        baseScore += 0.80;
-        keywords.push("Web GIS", "Leaflet.js");
-        matchedPub = lec.publications[0];
-      }
-      if (lowercaseTitle.includes("gps") || lowercaseTitle.includes("rute") || lowercaseTitle.includes("maps") || lowercaseTitle.includes("kurir")) {
-        baseScore += 0.75;
-        keywords.push("Google Maps API", "Geolocation");
-        matchedPub = lec.publications[2];
-      }
-    } else if (lec.id === "lec-8") { // Cloud, Crypto
-      if (lowercaseTitle.includes("enkripsi") || lowercaseTitle.includes("kripto") || lowercaseTitle.includes("aes") || lowercaseTitle.includes("security")) {
-        baseScore += 0.75;
-        keywords.push("Kriptografi", "AES Enkripsi");
-        matchedPub = lec.publications[0];
-      }
-      if (lowercaseTitle.includes("cloud") || lowercaseTitle.includes("virtual") || lowercaseTitle.includes("vm") || lowercaseTitle.includes("proxmox")) {
-        baseScore += 0.70;
-        keywords.push("Cloud Computing", "Virtualization");
-        matchedPub = lec.publications[2];
-      }
+    });
+
+    const matchScore = (keywordMatches * 15) + (keahlianMatches * 4) + (jurnalMatches * 6);
+    let score = 0;
+    if (matchScore > 0) {
+      score = Math.min(0.96, 0.30 + (matchScore / 100));
+    } else {
+      score = 0.05 + (Math.random() * 0.10);
     }
 
-    // Cap the score at 0.96 and ensure some variance
-    let finalScore = Math.min(0.96, baseScore + (Math.random() * 0.05));
-    if (keywords.length === 0) {
-      // General fallbacks
-      const generalKeywords = ["Rekayasa Perangkat Lunak", "Teknologi Informasi", "Kecerdasan Buatan"];
-      keywords = [generalKeywords[Math.floor(Math.random() * generalKeywords.length)]];
-      finalScore = 0.25 + (Math.random() * 0.15);
-    }
+    score = parseFloat(score.toFixed(2));
 
-    // Format score
-    finalScore = parseFloat(finalScore.toFixed(2));
+    const matchedPub = lec.publications[0];
+    const reason = `Topik penelitian Anda memiliki korelasi semantik yang kuat dengan keahlian utama dosen pada bidang ${lec.focus}. Hubungan akademis ini didukung oleh kecocokan dengan publikasi beliau mengenai "${matchedPub}" serta keselarasan pada kata kunci penelitian: ${lec.keywords.slice(0, 4).join(", ")}.`;
 
-    // Construct a realistic explainable reasoning block
-    const reason = `Topik penelitian Anda memiliki korelasi semantik yang kuat dengan keahlian utama dosen pada bidang ${lec.focus}. Hubungan ini didukung oleh kecocokan dengan publikasi beliau mengenai "${matchedPub}".`;
-
-    // Generate simulated BERT vector snippet
     const dummyVec = Array.from({ length: 4 }, () => (Math.random() * 2 - 1).toFixed(4)).join(", ");
     const bertDimensionSnippet = `BERT_768_VEC: [${dummyVec}, ...]`;
 
@@ -341,15 +409,14 @@ function simulateMatching(title: string, abstract: string) {
       nidn: lec.nidn,
       role: lec.role,
       focus: lec.focus,
-      score: finalScore,
-      matchedKeywords: keywords,
+      score: score,
+      matchedKeywords: matchedKws.length > 0 ? matchedKws : [lec.keywords[0]],
       matchedPublication: matchedPub,
       reason,
       bertDimensionSnippet
     };
   });
 
-  // Sort descending by score and pick top 3
   return scores.sort((a, b) => b.score - a.score).slice(0, 3);
 }
 
