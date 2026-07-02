@@ -39,20 +39,20 @@ export default function App() {
   const handleSwitchRole = (role: "mahasiswa" | "dosen" | "kaprodi") => {
     if (!user) return;
     
-    // Simulate role switching with preset demo credentials
+    // Simulate role switching with real UDB data
     const names = {
       mahasiswa: "Muhammad Aris Saputra",
-      dosen: "Tomoliyus, M.Cs.",
-      kaprodi: "Wijiyanto, M.Pd., M.Kom."
+      dosen: "Afu Ichsan Pradana, S.Kom., M.Kom.",
+      kaprodi: "Wijiyanto, S.Kom., M.Pd., M.Kom."
     };
     const ids = {
       mahasiswa: "220102034",
-      dosen: "0627018301",
+      dosen: "06114050",
       kaprodi: "0605058702"
     };
     const emails = {
       mahasiswa: "aris.saputra@student.udb.ac.id",
-      dosen: "tomoliyus@lecturer.udb.ac.id",
+      dosen: "afu.ichsan@lecturer.udb.ac.id",
       kaprodi: "wijiyanto@udb.ac.id"
     };
 
@@ -114,7 +114,6 @@ export default function App() {
       <footer className="w-full bg-white border-t border-slate-100 py-8 px-4 font-sans text-center">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
           <div className="flex items-center gap-2">
-            {/* Minimalist SVG crosshair for small footer mark */}
             <svg viewBox="0 0 100 100" className="w-5 h-5">
               <rect width="100" height="100" rx="24" fill="#2563eb" />
               <line x1="50" y1="20" x2="50" y2="80" stroke="white" strokeWidth="8" strokeLinecap="round" />
