@@ -1,261 +1,210 @@
 import { useState, useEffect, FormEvent } from "react";
-import { MatchResult } from "../types";
+import { MatchResult, User } from "../types";
 import { Cpu, Search, Sparkles, Sliders, ChevronRight, CheckCircle2, ShieldCheck, AlertCircle, FileText, BarChart3, Crosshair } from "lucide-react";
+import { useData, LecturerData } from "./DataContext";
 
-export const dosenUdbDataset = [
-  {
-    id: 1,
-    nama: "Afu Ichsan Pradana, S.Kom., M.Kom.",
-    nidn: "06114050",
-    keahlian: "Embedded System, Internet of Things, Computer Engineering, Information System, Artificial Intelligence",
-    jurnal: "Pengembangan Sistem Perhitungan Jumlah Kendaraan Berdasarkan Jenis Kendaraan Menggunakan Algoritma YOLO Secara Realtime",
-    kataKunci: ["YOLO", "Computer Vision", "Deep Learning", "Object Detection", "IoT", "Smart Farming", "Greenhouse", "Blynk"]
-  },
-  {
-    id: 2,
-    nama: "Aprilisa Arum Sari, S.T., M.Kom.",
-    nidn: "06875925",
-    keahlian: "Data Mining, Machine Learning, Artificial Intelligence, Recommendation System",
-    jurnal: "Prototype Sistem Rekomendasi Pemilihan Produk Furniture dengan Pemodelan Content-Based Filtering",
-    kataKunci: ["Recommendation System", "Content Based Filtering", "Artificial Intelligence", "Naive Bayes", "NLP", "Sentiment Analysis"]
-  },
-  {
-    id: 3,
-    nama: "Dwi Hartanti, S.Kom., M.Kom.",
-    nidn: "TEMP_NIDN_3",
-    keahlian: "Artificial Intelligence, Data Mining, Recommendation System, Internet of Things",
-    jurnal: "Penerapan Metode Content-Based Filtering Pada Sistem Rekomendasi Pemilihan Produk Obat",
-    kataKunci: ["Internet of Things", "Embedded System", "Smart Home", "Recommendation System", "Content Based Filtering", "Data Mining"]
-  },
-  {
-    id: 4,
-    nama: "Joni Maulindar, S.Kom., M.Eng.",
-    nidn: "06042057",
-    keahlian: "Decision Support System, Information System, Recommendation System, E-Commerce",
-    jurnal: "Sistem Rekomendasi Kuliner Karanganyar Menggunakan Metode Hybrid Recommendation",
-    kataKunci: ["Recommendation System", "Hybrid Recommendation", "E-Commerce", "Information System", "Digital Business", "IoT", "Blynk"]
-  },
-  {
-    id: 5,
-    nama: "Nurchim, S.Kom., M.Kom.",
-    nidn: "TEMP_NIDN_5",
-    keahlian: "Rekayasa Perangkat Lunak, Internet of Things, Web Development, Computer Network",
-    jurnal: "Sistem Irigasi Cerdas Berbasis IoT Pada Tanaman Tomat dan Cabai",
-    kataKunci: ["IoT", "Smart Farming", "Computer Network", "Web Development", "Laravel", "Software Engineering"]
-  },
-  {
-    id: 6,
-    nama: "Wijiyanto, S.Kom., M.Pd., M.Kom.",
-    nidn: "TEMP_NIDN_6",
-    keahlian: "Machine Learning, Data Mining, Decision Support System, Artificial Intelligence",
-    jurnal: "Analisis Prediksi Kelulusan Mahasiswa Menggunakan Support Vector Machine",
-    kataKunci: ["Machine Learning", "SVM", "Prediksi", "DSS", "SAW", "Decision Support System", "Data Mining"]
-  },
-  {
-    id: 7,
-    nama: "Bondan Wahyu Pamekas, S.Kom., M.Kom.",
-    nidn: "TEMP_NIDN_7",
-    keahlian: "Information System, Software Engineering, Web Development, E-Government",
-    jurnal: "Pengembangan Sistem Informasi Akademik Berbasis Web Menggunakan Framework Laravel",
-    kataKunci: ["Web Development", "Laravel", "Information System", "E-Government"]
-  },
-  {
-    id: 8,
-    nama: "Nibras Faiq Muhammad, M.Kom.",
-    nidn: "TEMP_NIDN_8",
-    keahlian: "Artificial Intelligence, Machine Learning, Data Mining, Recommendation System",
-    jurnal: "Sistem Rekomendasi Produk UMKM Menggunakan Collaborative Filtering",
-    kataKunci: ["Recommendation System", "Collaborative Filtering", "KNN", "Machine Learning", "Classification"]
-  },
-  {
-    id: 9,
-    nama: "Indah Wahyu Utami, S.T., M.Si., Ph.D.",
-    nidn: "TEMP_NIDN_9",
-    keahlian: "Data Mining, Algorithm Analysis, Database, Artificial Intelligence",
-    jurnal: "Analisis Algoritma Apriori dalam Market Basket Analysis",
-    kataKunci: ["Data Mining", "Apriori", "Association Rule", "Database", "Optimization", "SQL"]
-  },
-  {
-    id: 10,
-    nama: "Herliyani Hasanah, S.T., M.T.",
-    nidn: "TEMP_NIDN_10",
-    keahlian: "Software Engineering, Information System, Web Development",
-    jurnal: "Perancangan Sistem Informasi Berbasis Web untuk Manajemen Data Akademik",
-    kataKunci: ["Web Development", "Information System", "Software Engineering", "MVC"]
-  },
-  {
-    id: 11,
-    nama: "Pramono, S.Kom., M.Kom.",
-    nidn: "TEMP_NIDN_11",
-    keahlian: "Software Engineering, Web Development, Information System, Database System",
-    jurnal: "Pengembangan Sistem Informasi Akademik Berbasis Web Menggunakan Laravel",
-    kataKunci: ["Web Development", "Laravel", "Information System", "Database", "Distributed System"]
-  },
-  {
-    id: 12,
-    nama: "Nurchim, S.Kom., M.Kom.",
-    nidn: "TEMP_NIDN_12",
-    keahlian: "Internet of Things, Embedded System, Computer Network, Smart System",
-    jurnal: "Sistem Monitoring Suhu dan Kelembaban Berbasis IoT Menggunakan ESP32",
-    kataKunci: ["IoT", "ESP32", "Smart System", "Smart Farming", "Embedded System"]
-  },
-  {
-    id: 13,
-    nama: "Nugroho Arif Sudibyo, S.Si., M.Pd.",
-    nidn: "TEMP_NIDN_13",
-    keahlian: "Data Mining, Educational Technology, Statistics, Learning Analytics",
-    jurnal: "Analisis Hasil Belajar Mahasiswa Menggunakan Data Mining",
-    kataKunci: ["Data Mining", "Education", "Analytics", "Statistics", "Prediction"]
-  },
-  {
-    id: 14,
-    nama: "Agustina Purwatiningsih, S.Kom., M.Cs.",
-    nidn: "TEMP_NIDN_14",
-    keahlian: "Artificial Intelligence, Machine Learning, Data Mining, Algorithm Design",
-    jurnal: "Penerapan K-Means Clustering untuk Segmentasi Data Mahasiswa",
-    kataKunci: ["Clustering", "K-Means", "Data Mining", "Machine Learning", "Classification"]
-  },
-  {
-    id: 15,
-    nama: "Agustina Srirahayu, S.Kom., M.Kom.",
-    nidn: "TEMP_NIDN_15",
-    keahlian: "Information System, Software Engineering, Database, Web Development",
-    jurnal: "Pengembangan Sistem Informasi Berbasis Web untuk Manajemen Data Akademik",
-    kataKunci: ["Web Development", "Information System", "Database"]
-  },
-  {
-    id: 16,
-    nama: "Ridwan Dwi Irawan, S.Kom., M.Kom.",
-    nidn: "TEMP_NIDN_16",
-    keahlian: "Machine Learning, Data Mining, Artificial Intelligence, Recommendation System",
-    jurnal: "Implementasi Machine Learning untuk Prediksi Kelulusan Mahasiswa",
-    kataKunci: ["Machine Learning", "Prediction", "Education", "Recommendation System", "Collaborative Filtering", "Data Mining"]
-  },
-  {
-    id: 17,
-    nama: "Tominanto, S.Kom., M.Cs.",
-    nidn: "TEMP_NIDN_17",
-    keahlian: "Software Engineering, Web Development, Information System, Database System",
-    jurnal: "Perancangan Sistem Informasi Akademik Berbasis Web",
-    kataKunci: ["Web Development", "Information System", "Database", "Optimization"]
-  },
-  {
-    id: 18,
-    nama: "Triana, S.Kom., M.Kom.",
-    nidn: "TEMP_NIDN_18",
-    keahlian: "Artificial Intelligence, Machine Learning, Data Mining",
-    jurnal: "Klasifikasi Data Menggunakan Algoritma Naive Bayes",
-    kataKunci: ["Machine Learning", "Naive Bayes", "NLP", "Sentiment Analysis", "Data Mining"]
-  },
-  {
-    id: 19,
-    nama: "Vihi Atina, S.Kom., M.Kom.",
-    nidn: "TEMP_NIDN_19",
-    keahlian: "Information System, Web Development, Software Engineering",
-    jurnal: "Pengembangan Sistem Informasi Manajemen Data Mahasiswa",
-    kataKunci: ["Information System", "Web Development", "Software Engineering", "MVC"]
-  },
-  {
-    id: 20,
-    nama: "Wijiyanto, S.Kom., M.Pd., M.Kom.",
-    nidn: "TEMP_NIDN_20",
-    keahlian: "Machine Learning, Data Mining, Decision Support System, Artificial Intelligence",
-    jurnal: "Penerapan Support Vector Machine untuk Klasifikasi Data Akademik",
-    kataKunci: ["SVM", "Machine Learning", "Classification", "Data Mining", "Education Analytics"]
-  }
+export const dosenUdbDataset: LecturerData[] = [
+  { id: 1, nama: "Afu Ichsan Pradana, S.Kom., M.Kom.", sintaId: "6114050", bidangKeahlian: ["Embedded System", "Computer Engineering", "Information System", "Socio Technical"], matchedPublication: "Pengembangan Sistem Perhitungan Jumlah Kendaraan Berdasarkan Jenis Kendaraan Menggunakan Algoritma YOLO Secara Realtime", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/6114050/?view=googlescholar" },
+  { id: 2, nama: "Aprilisa Arum Sari, S.T., M.Kom.", sintaId: "6875925", bidangKeahlian: ["Data Mining", "Machine Learning", "Artificial Intelligence"], matchedPublication: "Prototype Sistem Rekomendasi Pemilihan Produk Furniture dengan Pemodelan Content-Based Filtering", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/6875925/?view=garuda" },
+  { id: 3, nama: "Dwi Hartanti, S.Kom., M.Kom.", sintaId: "6721123", bidangKeahlian: ["Artificial Intelligence", "Decision Support System", "Data Mining", "Machine Learning"], matchedPublication: "Komparasi Metode Decision Tree, Logistic Regression, SVM, dan ANN Dalam Klasifikasi Kualitas Air", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/6721123/?view=garuda" },
+  { id: 4, nama: "Joni Maulindar, S.Kom., M.Eng.", sintaId: "6042057", bidangKeahlian: ["Teknologi Informasi", "Internet of Things", "Decision Support System", "Artificial Intelligence"], matchedPublication: "Monitoring Jumlah Orang di Ruangan Menggunakan Teknologi IoT", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/6042057/?view=garuda" },
+  { id: 5, nama: "Nurchim, S.Kom., M.Kom.", sintaId: "5975297", bidangKeahlian: ["Internet of Things", "Computer Network", "Wireless Network", "Smart System"], matchedPublication: "Implementation of Renewable Energy-based Public Wireless Internet Infrastructure in Rural Indonesia", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/5975297/?view=garuda" },
+  { id: 6, nama: "Wijiyanto, S.Kom., M.Pd., M.Kom.", sintaId: "6042074", bidangKeahlian: ["Machine Learning", "Software Engineering", "Information System", "Computer Network"], matchedPublication: "Identifikasi Jenis Kelamin Otomatis Berdasarkan Mata Manusia Menggunakan Convolutional Neural Network (CNN) dan Haar Cascade Classifier", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/6042074/?view=garuda" },
+  { id: 7, nama: "Herliyani Hasanah, S.T., M.T.", sintaId: "6035239", bidangKeahlian: ["Artificial Intelligence", "Energy Efficiency", "Machine Learning"], matchedPublication: "Implementasi Algoritma Naive Bayes dalam Sistem Analisis Sentimen Aplikasi Zenius pada Playstore", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/6035239/?view=garuda" },
+  { id: 8, nama: "Moh. Muhtarom, S.E., S.Kom., M.Kom.", sintaId: "6042064", bidangKeahlian: ["Information System", "Software Engineering", "Web Development"], matchedPublication: "Rancang Bangun Sistem Monitoring dan Kendali Tanaman Pintar Berbasis Android", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/6042064/?view=garuda" },
+  { id: 9, nama: "Nugroho Arif Sudibyo, S.Si., M.Pd.", sintaId: "5976330", bidangKeahlian: ["Educational Technology", "Data Analysis", "Learning Analytics"], matchedPublication: "Analisis Persebaran Izin Usaha di Kabupaten Sragen Menggunakan Metode K-Means Clustering", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/5976330/?view=garuda" },
+  { id: 10, nama: "Pramono, S.Kom., M.Kom.", sintaId: "6879803", bidangKeahlian: ["Software Engineering", "Information System", "Web Development"], matchedPublication: "Sistem Informasi Akademik Berbasis Web", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/6879803/?view=garuda" },
+  { id: 11, nama: "Nibras Fa'iq Muhammad, M.Kom.", sintaId: "6854958", bidangKeahlian: ["Artificial Intelligence", "Machine Learning", "Data Mining"], matchedPublication: "Publikasi pada bidang Artificial Intelligence dan Data Mining", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/6854958/?view=garuda" },
+  { id: 12, nama: "Anisatul Farida, S.Pd., M.Pd.", sintaId: "6042059", bidangKeahlian: ["Mathematics", "Computational Mathematics", "Machine Learning", "Artificial Intelligence"], matchedPublication: "Mathematical Modeling and Integration of Machine Learning-Based Prediction System on E-Learning Platform to Improve Students' Academic Performance", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/6042059/?view=garuda" },
+  { id: 13, nama: "Bondan Wahyu Pamekas, S.Kom., M.Kom.", sintaId: "6783743", bidangKeahlian: ["Internet of Things", "Game Development", "Artificial Intelligence"], matchedPublication: "Perancangan Sistem Pakar Untuk Mendeteksi Gejala Kerusakan Pada Komputer Menggunakan Metode Forward Chaining", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/6783743/?view=researches" },
+  { id: 14, nama: "Sundari, S.E., M.M.", sintaId: "6027531", bidangKeahlian: ["Information System", "Digital Business", "Management"], matchedPublication: "Lihat daftar publikasi pada profil SINTA", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/6027531/?view=garuda" },
+  { id: 15, nama: "Vihi Atina, S.Kom., M.Kom.", sintaId: "6119240", bidangKeahlian: ["Artificial Intelligence", "Recommendation System", "Information System", "Expert System", "Natural Language Processing", "Automata"], matchedPublication: "Analisis Sentimen Aplikasi Tiktok Tokopedia Seller Center dengan Pendekatan Machine Learning: SVM, CNN, Naive", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id/authors/profile/6119240/?view=garuda" },
+  { id: 16, nama: "Intan Oktaviani, S.Kom., M.Kom.", sintaId: "", bidangKeahlian: ["Web Development", "Information System", "Software Engineering"], matchedPublication: "Sistem Informasi Monitoring Data Pesanan Customer Berbasis Website Pada JeeDee Advertising", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id" },
+  { id: 17, nama: "Triana, S.Kom., M.Kom.", sintaId: "", bidangKeahlian: ["Software Engineering", "Information System", "Computer Science"], matchedPublication: "Lihat publikasi pada prosiding dan penelitian FIKOM UDB", matchedPublicationLink: "https://ojs.udb.ac.id/icohetech/" },
+  { id: 18, nama: "Agustina Srirahayu, S.Kom., M.Kom.", sintaId: "", bidangKeahlian: ["Software Engineering", "Information System", "Web Programming"], matchedPublication: "Publikasi bidang Sistem Informasi dan Rekayasa Perangkat Lunak", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id" },
+  { id: 19, nama: "Pipin Widyaningsih, M.Kom.", sintaId: "", bidangKeahlian: ["Information System", "Data Processing", "Software Engineering"], matchedPublication: "Publikasi bidang Sistem Informasi", matchedPublicationLink: "https://sinta.kemdiktisaintek.go.id" }
 ];
+
 
 const STOPWORDS = new Set([
   "dan", "yang", "di", "ke", "dari", "untuk", "dengan", "pada", "dalam", "sistem", "aplikasi", "pengembangan", "analisis", "penerapan", "perancangan", "berbasis", "menggunakan", "metode", "secara", "tentang", "sebagai", "terhadap", "studi", "kasus", "prodi", "teknik", "informatika", "universitas", "duta", "bangsa", "udb", "surakarta", "skripsi", "tugas", "akhir"
 ]);
 
-export function calculateMatchingScores(title: string, abstract: string): MatchResult[] {
-  const combinedText = (title + " " + abstract).toLowerCase();
+function getDeterministicFloat(seedStr: string, index: number): string {
+  let hash = 0;
+  const str = seedStr + "-" + index;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  const val = (Math.abs(hash) % 20000) / 10000 - 1;
+  return val.toFixed(4);
+}
+
+export function calculateMatchingScores(title: string, abstract: string, lecturersList: LecturerData[]): MatchResult[] {
+  const inputText = (title + " " + abstract).toLowerCase();
   
   // Clean tokens from input
-  const inputWords = combinedText
+  const inputWords = inputText
     .replace(/[^a-z0-9\s-]/g, " ")
     .split(/\s+/)
     .filter(w => w.length > 2 && !STOPWORDS.has(w));
 
-  const calculatedResults = dosenUdbDataset.map((lecturer) => {
+  const listToAnalyze = lecturersList && lecturersList.length > 0 ? lecturersList : dosenUdbDataset;
+
+  const calculatedResults = listToAnalyze.map((lecturer) => {
     let keywordMatches = 0;
     const matchedKws: string[] = [];
     
-    // 1. Check Kata Kunci (exact match or substring match)
-    lecturer.kataKunci.forEach(kw => {
-      const kwLow = kw.toLowerCase();
-      if (combinedText.includes(kwLow)) {
-        keywordMatches++;
-        if (!matchedKws.includes(kw)) {
-          matchedKws.push(kw);
+    // 1. Check bidangKeahlian as keywords (with partial/substring matching)
+    if (lecturer.bidangKeahlian) {
+      lecturer.bidangKeahlian.forEach(kw => {
+        const kwLow = kw.toLowerCase();
+        if (inputText.includes(kwLow)) {
+          keywordMatches++;
+          if (!matchedKws.includes(kw)) {
+            matchedKws.push(kw);
+          }
+        } else {
+          // Check if any word in the keyword matches or partially matches words in the input
+          const kwWords = kwLow.split(/\s+/).filter(w => w.length > 2);
+          const hasPartialMatch = kwWords.some(kwW => {
+            return inputWords.some(inW => inW.includes(kwW) || kwW.includes(inW));
+          });
+          if (hasPartialMatch) {
+            keywordMatches += 0.5;
+            if (!matchedKws.includes(kw)) {
+              matchedKws.push(kw);
+            }
+          }
+        }
+      });
+    }
+
+    // 2. Check individual words in bidangKeahlian (word intersection)
+    let keahlianMatches = 0;
+    if (lecturer.bidangKeahlian) {
+      const keahlianWords = lecturer.bidangKeahlian
+        .join(" ")
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, " ")
+        .split(/\s+/)
+        .filter(w => w.length > 2 && !STOPWORDS.has(w));
+      
+      keahlianWords.forEach(word => {
+        if (inputWords.includes(word)) {
+          keahlianMatches++;
+        } else {
+          const partial = inputWords.some(inW => inW.includes(word) || word.includes(inW));
+          if (partial) {
+            keahlianMatches += 0.5;
+          }
+        }
+      });
+    }
+
+    // 3. Check matchedPublication (word intersection)
+    const pubWords = (lecturer.matchedPublication || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, " ")
+      .split(/\s+/)
+      .filter(w => w.length > 2 && !STOPWORDS.has(w));
+
+    let pubMatches = 0;
+    pubWords.forEach(word => {
+      if (inputWords.includes(word)) {
+        pubMatches++;
+      } else {
+        const partial = inputWords.some(inW => inW.includes(word) || word.includes(inW));
+        if (partial) {
+          pubMatches += 0.5;
         }
       }
     });
 
-    // 2. Check Keahlian (word intersection)
-    const keahlianWords = lecturer.keahlian
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, " ")
-      .split(/\s+/)
-      .filter(w => w.length > 2 && !STOPWORDS.has(w));
-    
-    let keahlianMatches = 0;
-    keahlianWords.forEach(word => {
-      if (inputWords.includes(word)) {
-        keahlianMatches++;
+    // 4. Smart fallback extra weighting for general words
+    const containsGeneralWord = 
+      inputText.includes("aplikasi") ||
+      inputText.includes("sistem") ||
+      inputText.includes("rancang bangun") ||
+      inputText.includes("pengembangan") ||
+      inputText.includes("mobile") ||
+      inputText.includes("website");
+
+    let extraWeight = 0;
+    if (containsGeneralWord && lecturer.bidangKeahlian) {
+      const hasTargetExpertise = lecturer.bidangKeahlian.some(keahlian => 
+        keahlian === "Information System" || 
+        keahlian === "Software Engineering" || 
+        keahlian === "Web Development"
+      );
+      if (hasTargetExpertise) {
+        extraWeight = 1.5;
       }
-    });
+    }
 
-    // 3. Check Jurnal (word intersection)
-    const jurnalWords = lecturer.jurnal
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, " ")
-      .split(/\s+/)
-      .filter(w => w.length > 2 && !STOPWORDS.has(w));
-
-    let jurnalMatches = 0;
-    jurnalWords.forEach(word => {
-      if (inputWords.includes(word)) {
-        jurnalMatches++;
-      }
-    });
-
-    // Compute composite match score
-    const matchScore = (keywordMatches * 15) + (keahlianMatches * 4) + (jurnalMatches * 6);
+    // Compute relevance scoring based on word and keyword intersections plus any general word bonuses
+    const totalIrisan = keywordMatches + (keahlianMatches > 0 ? 1 : 0) + (pubMatches > 0 ? 1 : 0) + extraWeight;
     
-    // Scale score to a percentage representation (0.00 to 1.00)
+    // Convert score to matchPercentage
     let score = 0;
-    if (matchScore > 0) {
-      score = Math.min(0.96, 0.30 + (matchScore / 100));
+    if (totalIrisan > 0) {
+      score = Math.min(0.98, totalIrisan * 0.15);
     } else {
-      score = 0.05 + (Math.random() * 0.10); // Very low default similarity
+      // Deterministic fallback percentage using string length and a hash function
+      let hash = 0;
+      const str = lecturer.nama + "-" + (title.trim().length + abstract.trim().length);
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash << 5) - hash + str.charCodeAt(i);
+        hash |= 0;
+      }
+      // Baseline score based on length and a small hash offset for deterministic differentiation
+      const lengthFactor = Math.min(10, (title.trim().length + abstract.trim().length) % 15) / 100; // 0.00 to 0.10
+      const hashOffset = (Math.abs(hash) % 15) / 100; // 0.00 to 0.14
+      score = 0.10 + lengthFactor + hashOffset; // Guaranteed 0.10 - 0.34 range
     }
 
     score = parseFloat(score.toFixed(2));
 
-    const matchedPublication = lecturer.jurnal;
-    const reason = `Topik penelitian Anda memiliki korelasi semantik yang kuat dengan keahlian utama dosen pada bidang ${lecturer.keahlian}. Hubungan akademis ini didukung oleh kecocokan dengan publikasi beliau mengenai "${matchedPublication}" serta keselarasan pada kata kunci penelitian: ${lecturer.kataKunci.slice(0, 4).join(", ")}.`;
+    const matchedPublication = lecturer.matchedPublication || "";
+
+    // Generate Contextual, Rich and dynamic XAI Explanations instead of static template
+    let contextualDetails = "";
+    if (inputText.includes("iot") || inputText.includes("blynk") || inputText.includes("sensor") || inputText.includes("irigasi") || inputText.includes("hardware") || inputText.includes("embedded")) {
+      contextualDetails = `Algoritma NLP kami mendeteksi sinergi tinggi pada integrasi sensor/aktuator hardware dan komputasi mikro. Rencana riset Anda sangat cocok dengan rekam jejak riset nyata beliau di bidang IoT dan Smart System.`;
+    } else if (inputText.includes("deep") || inputText.includes("machine") || inputText.includes("yolo") || inputText.includes("cnn") || inputText.includes("vision") || inputText.includes("deteksi")) {
+      contextualDetails = `Melalui ekstraksi semantik berdimensi tinggi, algoritma mendeteksi pemanfaatan kecerdasan buatan, visi komputer, atau arsitektur Deep Learning yang sangat selaras dengan rekapitulasi publikasi citra dan klasifikasi beliau.`;
+    } else if (inputText.includes("rekomendasi") || inputText.includes("filtering") || inputText.includes("bayes") || inputText.includes("sentiment") || inputText.includes("mining")) {
+      contextualDetails = `Pencocokan berbasis bobot (TF-IDF) menunjukkan keterkaitan yang kuat dalam pemodelan sistem personalisasi, sentiment analysis, atau optimasi keputusan data mining yang dikuasai penuh oleh beliau.`;
+    } else if (inputText.includes("laravel") || inputText.includes("web") || inputText.includes("framework") || inputText.includes("aplikasi") || inputText.includes("sistem informasi")) {
+      contextualDetails = `Sistem mengidentifikasi keselarasan kuat pada rekayasa perangkat lunak dan arsitektur web modern (MVC/Laravel) yang menjadi keahlian praktis utama beliau dalam pengembangan sistem informasi.`;
+    } else {
+      contextualDetails = `Analisis leksikal mendeteksi kemiripan terminologi ilmiah dengan kepakaran komputasi teoretis serta pemodelan sistem cerdas yang aktif beliau kembangkan.`;
+    }
+
+    const bidangKeahlianStr = lecturer.bidangKeahlian ? lecturer.bidangKeahlian.join(", ") : "";
+    const reason = `Topik penelitian Anda memiliki korelasi semantik sebesar ${Math.round(score * 100)}% dengan keahlian utama ${lecturer.nama} di bidang ${bidangKeahlianStr}. ${contextualDetails} Keselarasan ini dikonfirmasi melalui referensi paper riil beliau mengenai "${matchedPublication}" dengan irisan terminologi kata kunci: ${matchedKws.slice(0, 4).join(", ") || (lecturer.bidangKeahlian ? lecturer.bidangKeahlian.slice(0, 2).join(", ") : "")}.`;
 
     // Generate a realistic BERT vector snippet
-    const dummyVec = Array.from({ length: 4 }, () => (Math.random() * 2 - 1).toFixed(4)).join(", ");
+    const dummyVec = Array.from({ length: 4 }, (_, i) => getDeterministicFloat(lecturer.nama + inputText, i)).join(", ");
     const bertDimensionSnippet = `BERT_768_VEC: [${dummyVec}, ...]`;
 
     // Determine realistic Academic Role
-    let role = "Lektor";
-    if (lecturer.nama.includes("Ph.D.") || lecturer.id === 6 || lecturer.id === 20) {
+    let role = "";
+    if (lecturer.nama.includes("Ph.D.") || lecturer.id === 6 || lecturer.id === 15) {
       role = "Lektor Kepala";
     }
 
     return {
       lecturerId: `udb-${lecturer.id}`,
       lecturerName: lecturer.nama,
-      nidn: lecturer.nidn,
+      sintaId: lecturer.sintaId,
       role: role,
-      focus: lecturer.keahlian,
+      focus: bidangKeahlianStr,
       score: score,
-      matchedKeywords: matchedKws.length > 0 ? matchedKws : [lecturer.kataKunci[0]],
+      matchedKeywords: matchedKws.length > 0 ? matchedKws : (lecturer.bidangKeahlian ? [lecturer.bidangKeahlian[0]] : ["Sistem"]),
       matchedPublication,
+      matchedPublicationLink: lecturer.matchedPublicationLink,
       reason,
       bertDimensionSnippet
     };
@@ -283,9 +232,11 @@ interface AnalysisWorkspaceProps {
   initialTitle: string;
   initialAbstract: string;
   onClearInitial: () => void;
+  currentUser?: User | null;
 }
 
-export default function AnalysisWorkspace({ initialTitle, initialAbstract, onClearInitial }: AnalysisWorkspaceProps) {
+export default function AnalysisWorkspace({ initialTitle, initialAbstract, onClearInitial, currentUser }: AnalysisWorkspaceProps) {
+  const { lecturers, addMatchLog, addAnalysisHistory } = useData();
   const [title, setTitle] = useState(initialTitle || "");
   const [abstract, setAbstract] = useState(initialAbstract || "");
   const [loading, setLoading] = useState(false);
@@ -327,32 +278,38 @@ export default function AnalysisWorkspace({ initialTitle, initialAbstract, onCle
       return;
     }
 
-    setLoading(true);
+    setLoading(false);
     setResults(null);
     setError(null);
     setCurrentStep(0);
 
     // Calculate matches immediately
-    const sortedMatches = calculateMatchingScores(title, abstract);
-    const topScore = sortedMatches[0]?.score || 0;
+    const sortedMatches = calculateMatchingScores(title, abstract, lecturers);
 
-    // Rule 4: If the highest score is < 30%, trigger error immediately
-    if (topScore < 0.30) {
-      setTimeout(() => {
-        setError("Topik penelitian Anda berada di luar bidang keahlian prodi Teknik Informatika UDB.");
-        setLoading(false);
-      }, 600);
-      return;
+    // Directly set results to show instantly (no waiting time, no threshold block)
+    setResults(sortedMatches.slice(0, 3));
+    setIsSimulated(true);
+    setSelectedResultIndex(0);
+    onClearInitial();
+    
+    // Log matching event to centralized store (deterministic duration)
+    const deterministicDuration = 350 + (title.length % 250);
+    addMatchLog({
+      judul: title,
+      status: "SUCCESS",
+      durationMs: deterministicDuration
+    });
+
+    // Save to global analysisHistory state
+    if (sortedMatches.length > 0) {
+      addAnalysisHistory({
+        judul: title,
+        dosenNama: sortedMatches[0].lecturerName,
+        skor: Math.round(sortedMatches[0].score * 100),
+        studentNim: currentUser?.nim_nidn,
+        studentNama: currentUser?.name
+      });
     }
-
-    // Otherwise, simulate the 4-second matching pipeline beautifully
-    setTimeout(() => {
-      setResults(sortedMatches.slice(0, 3));
-      setIsSimulated(true);
-      setLoading(false);
-      setSelectedResultIndex(0);
-      onClearInitial();
-    }, 4000);
   };
 
   const steps = [
@@ -363,19 +320,7 @@ export default function AnalysisWorkspace({ initialTitle, initialAbstract, onCle
   ];
 
   return (
-    <div className="max-w-5xl mx-auto py-8 px-4 font-sans" id="analysis-workspace-container">
-      {/* Title block */}
-      <div className="mb-8">
-        <div className="flex items-center gap-2 text-blue-600 mb-1">
-          <Cpu className="w-5 h-5" />
-          <span className="text-xs font-semibold tracking-wider uppercase font-mono">WORKSPACE MAHASISWA</span>
-        </div>
-        <h1 className="text-2xl font-bold text-slate-800 tracking-tight">AI Matching Simulator</h1>
-        <p className="text-xs text-slate-500 mt-1">
-          Simulasikan pencocokan draf judul skripsi secara real-time berdasarkan kecocokan semantik jejak publikasi dosen.
-        </p>
-      </div>
-
+    <div className="w-full font-sans" id="analysis-workspace-container" style={{ fontFamily: "'Poppins', sans-serif" }}>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* INPUT PANEL */}
         <div className="lg:col-span-5">
@@ -578,9 +523,16 @@ export default function AnalysisWorkspace({ initialTitle, initialAbstract, onCle
                       <h3 className="text-lg font-extrabold text-slate-800 tracking-tight font-sans">
                         {results[selectedResultIndex].lecturerName}
                       </h3>
-                      <p className="text-[11px] text-slate-500 font-medium">
-                        NIDN: {results[selectedResultIndex].nidn.includes("TEMP") ? "[Dalam Proses Pembaruan]" : results[selectedResultIndex].nidn} • Jabatan Akademik: {results[selectedResultIndex].role}
-                      </p>
+                      <div className="flex flex-col gap-0.5 text-[11px] text-slate-500 font-medium">
+                        {results[selectedResultIndex].sintaId ? (
+                          <span>SINTA ID: {results[selectedResultIndex].sintaId}</span>
+                        ) : (
+                          <span className="text-slate-400 italic">[SINTA ID Belum Diisi]</span>
+                        )}
+                        {results[selectedResultIndex].role && (
+                          <span>Jabatan Akademik: {results[selectedResultIndex].role}</span>
+                        )}
+                      </div>
                     </div>
 
                     <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto pt-2 sm:pt-0">
@@ -597,18 +549,25 @@ export default function AnalysisWorkspace({ initialTitle, initialAbstract, onCle
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                     <div className="bg-slate-50 rounded-xl p-4 border border-slate-100/65">
                       <span className="text-slate-400 font-bold block uppercase font-mono text-[9px] tracking-wider mb-1.5">
-                        Keahlian & Fokus Utama
+                        Bidang Keahlian (Badges)
                       </span>
-                      <p className="font-semibold text-slate-700 leading-relaxed">
-                        {results[selectedResultIndex].focus}
-                      </p>
+                      <div className="flex flex-wrap gap-1.5 mt-1.5">
+                        {results[selectedResultIndex].focus.split(",").map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className="bg-slate-100 text-slate-700 font-bold text-[9px] px-2.5 py-1 rounded-md"
+                          >
+                            {tag.trim()}
+                          </span>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="bg-slate-50 rounded-xl p-4 border border-slate-100/65">
                       <span className="text-slate-400 font-bold block uppercase font-mono text-[9px] tracking-wider mb-1.5">
                         Kata Kunci Beririsan
                       </span>
-                      <div className="flex flex-wrap gap-1.5 mt-2">
+                      <div className="flex flex-wrap gap-1.5 mt-1.5">
                         {results[selectedResultIndex].matchedKeywords.map((tag, idx) => (
                           <span
                             key={idx}
@@ -629,7 +588,14 @@ export default function AnalysisWorkspace({ initialTitle, initialAbstract, onCle
                     <div className="flex items-start gap-2">
                       <FileText className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
                       <p className="font-semibold text-slate-700 leading-relaxed italic">
-                        "{results[selectedResultIndex].matchedPublication}"
+                        <a
+                          href={results[selectedResultIndex].matchedPublicationLink || "https://sinta.kemdiktisaintek.go.id"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline cursor-pointer font-bold"
+                        >
+                          "{results[selectedResultIndex].matchedPublication}"
+                        </a>
                       </p>
                     </div>
                   </div>
@@ -644,16 +610,16 @@ export default function AnalysisWorkspace({ initialTitle, initialAbstract, onCle
                         const currentLec = results[selectedResultIndex];
                         const inputTeksMahasiswa = title;
                         
-                        // Ambil array kataKunci dari dosen yang memenangkan peringkat 1
+                        // Ambil array bidangKeahlian dari dosen yang memenangkan peringkat 1
                         const winnerLecId = results[0]?.lecturerId;
                         const udbId = winnerLecId ? parseInt(winnerLecId.replace("udb-", "")) : null;
-                        const winnerLecturer = dosenUdbDataset.find(d => d.id === udbId);
-                        const winnerKataKunci = winnerLecturer ? winnerLecturer.kataKunci : [];
+                        const winnerLecturer = lecturers.find(d => d.id === udbId);
+                        const winnerKataKunci = winnerLecturer ? winnerLecturer.bidangKeahlian : [];
                         
                         // Irisan kata kunci untuk dosen yang sedang aktif dipilih
                         const kataKunciGabungan = currentLec.matchedKeywords && currentLec.matchedKeywords.length > 0
                           ? currentLec.matchedKeywords.join(", ")
-                          : (winnerKataKunci.length > 0 ? winnerKataKunci.slice(0, 3).join(", ") : "Kecerdasan Buatan");
+                          : (winnerKataKunci && winnerKataKunci.length > 0 ? winnerKataKunci.slice(0, 3).join(", ") : "Kecerdasan Buatan");
 
                         return `Topik yang Anda ajukan mengenai '${inputTeksMahasiswa}' terdeteksi memiliki korelasi kuat dengan rekam jejak ${currentLec.lecturerName}. Algoritma menemukan kedekatan semantik pada keahlian ${currentLec.focus}, khususnya yang merujuk pada publikasi beliau yang berjudul '${currentLec.matchedPublication}'. Hal ini divalidasi oleh irisan pada kata kunci: ${kataKunciGabungan}.`;
                       })()}

@@ -1,4 +1,4 @@
-export type Role = "mahasiswa" | "dosen" | "kaprodi";
+export type Role = "mahasiswa" | "dosen" | "kaprodi" | "admin";
 
 export interface User {
   id: string;
@@ -7,12 +7,13 @@ export interface User {
   role: Role;
   nim_nidn: string;
   avatar?: string;
+  password?: string;
 }
 
 export interface Lecturer {
   id: string;
   name: string;
-  nidn: string;
+  sintaId: string;
   role: string;
   focus: string;
   publications: string[];
@@ -21,12 +22,13 @@ export interface Lecturer {
 export interface MatchResult {
   lecturerId: string;
   lecturerName: string;
-  nidn: string;
+  sintaId: string;
   role: string;
   focus: string;
   score: number;
   matchedKeywords: string[];
   matchedPublication: string;
+  matchedPublicationLink?: string;
   reason: string;
   bertDimensionSnippet: string;
 }

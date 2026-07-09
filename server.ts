@@ -24,7 +24,7 @@ const ai = process.env.GEMINI_API_KEY
   : null;
 
 // Lecturer database (Real UDB FIKOM Lecturers)
-const LECTURERS = [
+let LECTURERS = [
   {
     id: "udb-1",
     name: "Afu Ichsan Pradana, S.Kom., M.Kom.",
@@ -247,6 +247,10 @@ const LECTURERS = [
   }
 ];
 
+
+
+
+
 // Health Check API
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", time: new Date() });
@@ -255,6 +259,7 @@ app.get("/api/health", (req, res) => {
 // Match Endpoint with Gemini AI
 app.post("/api/match", async (req, res) => {
   const { title, abstract } = req.body;
+  const startTime = Date.now();
 
   if (!title) {
     return res.status(400).json({ error: "Judul skripsi wajib diisi." });
@@ -264,6 +269,9 @@ app.post("/api/match", async (req, res) => {
   if (!ai) {
     console.warn("GEMINI_API_KEY is not defined. Falling back to local semantic simulation.");
     const simulatedResults = simulateMatching(title, abstract || "");
+    
+
+
     return res.json({ results: simulatedResults, isSimulated: true });
   }
 
@@ -325,11 +333,16 @@ Keluaran harus berformat JSON murni tanpa markdown block. JSON harus berupa arra
       };
     });
 
+
+
     return res.json({ results: enrichedResults, isSimulated: false });
   } catch (error: any) {
     console.error("Gemini Match Error:", error);
     // Safe fallback on API error
     const simulatedResults = simulateMatching(title, abstract || "");
+    
+
+
     return res.json({ results: simulatedResults, isSimulated: true, error: error.message });
   }
 });
