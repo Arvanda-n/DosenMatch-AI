@@ -1,6 +1,6 @@
 import { useState, useEffect, FormEvent } from "react";
 import { MatchResult, User } from "../types";
-import { Cpu, Search, Sparkles, Sliders, ChevronRight, CheckCircle2, ShieldCheck, AlertCircle, FileText, BarChart3, Crosshair } from "lucide-react";
+import { Cpu, Search, Sparkles, Sliders, ChevronRight, CheckCircle2, ShieldCheck, AlertCircle, FileText, BarChart3, Crosshair, Loader2 } from "lucide-react";
 import { useData, LecturerData } from "./DataContext";
 
 export const dosenUdbDataset: LecturerData[] = [
@@ -246,12 +246,38 @@ export default function AnalysisWorkspace({ initialTitle, initialAbstract, onCle
   const [error, setError] = useState<string | null>(null);
   const [selectedResultIndex, setSelectedResultIndex] = useState(0);
 
+  // Simulated AI loading state & text
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisProgressText, setAnalysisProgressText] = useState("Mengekstrak terminologi skripsi...");
+
   useEffect(() => {
     if (initialTitle) {
       setTitle(initialTitle);
       setAbstract(initialAbstract);
     }
   }, [initialTitle, initialAbstract]);
+
+  // Dynamic progress text updates during simulated AI calculation (2.5 - 3s total)
+  useEffect(() => {
+    let timer1: NodeJS.Timeout;
+    let timer2: NodeJS.Timeout;
+
+    if (isAnalyzing) {
+      setAnalysisProgressText("Mengekstrak terminologi skripsi...");
+      
+      timer1 = setTimeout(() => {
+        setAnalysisProgressText("Menghitung cosine similarity dengan data dosen...");
+      }, 1000);
+      
+      timer2 = setTimeout(() => {
+        setAnalysisProgressText("Menyusun peringkat kecocokan keahlian...");
+      }, 2000);
+    }
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, [isAnalyzing]);
 
   // Visual simulation timer for pipeline steps
   useEffect(() => {
@@ -283,33 +309,41 @@ export default function AnalysisWorkspace({ initialTitle, initialAbstract, onCle
     setError(null);
     setCurrentStep(0);
 
-    // Calculate matches immediately
-    const sortedMatches = calculateMatchingScores(title, abstract, lecturers);
+    // Begin simulated AI calculation process
+    setIsAnalyzing(true);
 
-    // Directly set results to show instantly (no waiting time, no threshold block)
-    setResults(sortedMatches.slice(0, 3));
-    setIsSimulated(true);
-    setSelectedResultIndex(0);
-    onClearInitial();
-    
-    // Log matching event to centralized store (deterministic duration)
-    const deterministicDuration = 350 + (title.length % 250);
-    addMatchLog({
-      judul: title,
-      status: "SUCCESS",
-      durationMs: deterministicDuration
-    });
+    // Timeout of 2.8 seconds to simulate realistic backend AI matching
+    setTimeout(() => {
+      // Calculate matches
+      const sortedMatches = calculateMatchingScores(title, abstract, lecturers);
 
-    // Save to global analysisHistory state
-    if (sortedMatches.length > 0) {
-      addAnalysisHistory({
+      // Set results
+      setResults(sortedMatches.slice(0, 3));
+      setIsSimulated(true);
+      setSelectedResultIndex(0);
+      onClearInitial();
+      
+      // Log matching event to centralized store (deterministic duration)
+      const deterministicDuration = 350 + (title.length % 250);
+      addMatchLog({
         judul: title,
-        dosenNama: sortedMatches[0].lecturerName,
-        skor: Math.round(sortedMatches[0].score * 100),
-        studentNim: currentUser?.nim_nidn,
-        studentNama: currentUser?.name
+        status: "SUCCESS",
+        durationMs: deterministicDuration
       });
-    }
+
+      // Save to global analysisHistory state
+      if (sortedMatches.length > 0) {
+        addAnalysisHistory({
+          judul: title,
+          dosenNama: sortedMatches[0].lecturerName,
+          skor: Math.round(sortedMatches[0].score * 100),
+          studentNim: currentUser?.nim_nidn,
+          studentNama: currentUser?.name
+        });
+      }
+
+      setIsAnalyzing(false);
+    }, 2800);
   };
 
   const steps = [
@@ -371,23 +405,23 @@ export default function AnalysisWorkspace({ initialTitle, initialAbstract, onCle
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={isAnalyzing}
                 className={`w-full flex items-center justify-center gap-2 font-semibold text-xs py-3.5 rounded-xl transition duration-150 shadow-md ${
-                  loading
-                    ? "bg-slate-100 text-slate-400 cursor-not-allowed shadow-none"
+                  isAnalyzing
+                    ? "bg-blue-100 text-blue-400/80 cursor-not-allowed shadow-none"
                     : "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-100 cursor-pointer"
                 }`}
                 id="btn-run-analysis"
               >
-                {loading ? (
+                {isAnalyzing ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin"></div>
-                    <span>Memproses Pipeline AI...</span>
+                    <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                    <span className="font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>Menganalisis...</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4" />
-                    <span>Mulai Analisis AI</span>
+                    <span className="font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>Mulai Analisis AI</span>
                   </>
                 )}
               </button>
@@ -397,68 +431,71 @@ export default function AnalysisWorkspace({ initialTitle, initialAbstract, onCle
 
         {/* WORKFLOW PIPELINE / RESULTS */}
         <div className="lg:col-span-7">
-          {loading ? (
-            /* PIPELINE PROGRESS VIEW */
-            <div className="bg-white rounded-2xl border border-slate-100 p-8 shadow-sm flex flex-col justify-between min-h-[450px]" id="pipeline-loader">
-              <div>
-                <div className="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping"></div>
-                    <h3 className="font-bold text-slate-800 text-sm font-sans">Pipeline NLP Sedang Berjalan...</h3>
-                  </div>
-                  <span className="font-mono text-xs font-bold text-blue-600 uppercase">
-                    Step {currentStep + 1}/4
-                  </span>
+          {isAnalyzing ? (
+            /* SMART SKELETON / SPINNER AI LOADING UI */
+            <div className="bg-white rounded-2xl border border-slate-100 p-8 shadow-sm space-y-6 min-h-[500px]" id="ai-smart-loading" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              {/* Spinner & Modern Pulse Accent */}
+              <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
+                <div className="relative flex items-center justify-center">
+                  {/* Outer breathing ring */}
+                  <div className="absolute w-16 h-16 rounded-full bg-blue-100 animate-ping opacity-25"></div>
+                  {/* Inner breathing ring */}
+                  <div className="absolute w-12 h-12 rounded-full bg-blue-50 animate-pulse border border-blue-100/50"></div>
+                  {/* Spinner icon */}
+                  <Loader2 className="w-8 h-8 text-blue-600 animate-spin relative" />
                 </div>
-
-                <div className="space-y-6">
-                  {steps.map((st, idx) => (
-                    <div
-                      key={idx}
-                      className={`flex gap-4 items-start transition duration-300 ${
-                        idx === currentStep
-                          ? "opacity-100 scale-[1.01]"
-                          : idx < currentStep
-                          ? "opacity-60"
-                          : "opacity-30"
-                      }`}
-                      id={`pipeline-step-${idx}`}
-                    >
-                      <div className="mt-0.5">
-                        {idx < currentStep ? (
-                          <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold font-mono">
-                            ✓
-                          </div>
-                        ) : idx === currentStep ? (
-                          <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold font-mono animate-pulse">
-                            ▶
-                          </div>
-                        ) : (
-                          <div className="w-6 h-6 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-xs font-bold font-mono">
-                            {idx + 1}
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-bold text-xs text-slate-800 font-sans tracking-tight">{st.name}</h4>
-                        <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{st.desc}</p>
-                      </div>
-                    </div>
-                  ))}
+                
+                <div className="space-y-1.5 max-w-sm">
+                  <h4 className="font-extrabold text-slate-800 text-sm tracking-tight">Proses Analisis Semantik AI</h4>
+                  <p className="text-[11px] text-blue-600 font-semibold animate-pulse tracking-wide uppercase font-mono">
+                    {analysisProgressText}
+                  </p>
+                  <p className="text-[10px] text-slate-400">Model: gemini-3.5-flash • IndoBERT embeddings v2</p>
                 </div>
               </div>
 
-              {/* Progress visual bar */}
-              <div className="mt-8 pt-6 border-t border-slate-100">
-                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-3">
-                  <div
-                    className="bg-blue-600 h-full rounded-full transition-all duration-1000 ease-out"
-                    style={{ width: `${((currentStep + 1) / 4) * 100}%` }}
-                  ></div>
+              {/* SKELETON PLACEHOLDERS */}
+              <div className="space-y-4 animate-pulse">
+                {/* 3 tabs skeleton */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {[1, 2, 3].map((n) => (
+                    <div key={n} className="bg-slate-50/70 border border-slate-100 p-4 rounded-xl space-y-3">
+                      <div className="h-2 bg-slate-200 rounded w-12"></div>
+                      <div className="h-3 bg-slate-200 rounded w-20"></div>
+                      <div className="h-4 bg-slate-200 rounded w-8 mt-2"></div>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex justify-between items-center text-[10px] text-slate-400 font-mono">
-                  <span>DosenMatch AI Matcher Engine v2.1</span>
-                  <span>Model: gemini-3.5-flash</span>
+
+                {/* Big detail box skeleton */}
+                <div className="bg-slate-50/40 rounded-xl p-6 border border-slate-100/50 space-y-5">
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-2.5 w-2/3">
+                      <div className="h-2.5 bg-slate-200 rounded w-24"></div>
+                      <div className="h-4 bg-slate-200 rounded w-full"></div>
+                      <div className="h-3 bg-slate-200 rounded w-1/2"></div>
+                    </div>
+                    <div className="w-12 h-12 rounded-xl bg-slate-200"></div>
+                  </div>
+                  
+                  <div className="border-t border-slate-100 pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-slate-100/50 p-4 rounded-lg space-y-2">
+                      <div className="h-2.5 bg-slate-200 rounded w-16"></div>
+                      <div className="h-2 bg-slate-200 rounded w-full"></div>
+                      <div className="h-2 bg-slate-200 rounded w-4/5"></div>
+                    </div>
+                    <div className="bg-slate-100/50 p-4 rounded-lg space-y-2">
+                      <div className="h-2.5 bg-slate-200 rounded w-20"></div>
+                      <div className="h-2 bg-slate-200 rounded w-full"></div>
+                      <div className="h-2 bg-slate-200 rounded w-3/4"></div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="h-2.5 bg-slate-200 rounded w-24"></div>
+                    <div className="h-2 bg-slate-200 rounded w-full"></div>
+                    <div className="h-2 bg-slate-200 rounded w-5/6"></div>
+                  </div>
                 </div>
               </div>
             </div>
