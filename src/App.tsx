@@ -59,7 +59,7 @@ function AppContent() {
     if (role === "admin") {
       setUser({
         id: "admin",
-        name: "Arva Administrator",
+        name: "Administrator",
         email: "admin@udb.ac.id",
         role: "admin",
         nim_nidn: "admin",

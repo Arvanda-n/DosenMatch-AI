@@ -56,7 +56,7 @@ export default function SecurityPortal({ onLoginSuccess }: SecurityPortalProps) 
       setTimeout(() => {
         onLoginSuccess({
           id: "admin",
-          name: "Arva Administrator",
+          name: "Administrator",
           email: "admin.fikom@udb.ac.id",
           role: "admin" as Role,
           nim_nidn: "admin",
